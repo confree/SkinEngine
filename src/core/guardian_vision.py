@@ -9,10 +9,6 @@ import os
 import datetime
 from typing import Dict, Any
 from pathlib import Path
-import logging
-
-# [v10.7.6-LOG] Initialize logger for the module
-logger = logging.getLogger(__name__)
 
 class GuardianVisionEngine:
     """
@@ -22,13 +18,9 @@ class GuardianVisionEngine:
     """
     
     def __init__(self, api_key: str = None):
-        # [v10.7.6-SEC] Load API Key from Environment
-        self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
-        if not self.api_key:
-            logger.warning("⚠️ [GuardianVision] GEMINI_API_KEY is missing in environment! Engine will fail on analysis.")
-            self.client = None
-        else:
-            self.client = genai.Client(api_key=self.api_key)
+        # [SECURITY] Mock Mode Strictly Disabled. API Key is MANDATORY.
+        self.api_key = api_key or "AIzaSyD1MVFUZux4oHnk8hEimxgwFqKq7EaOENU"
+        self.client = genai.Client(api_key=self.api_key)
         
         # [VERSION v4.0 - NEXT-GEN STABLE] 
         self.model_id = 'models/gemini-2.5-flash'
@@ -165,8 +157,8 @@ class GuardianVisionEngine:
         )
 
     def analyze_image(self, image_path: str, context: Dict[str, Any] = {}, analysis_type: str = "general") -> Dict[str, Any]:
-        if not self.api_key or not self.client:
-             raise RuntimeError("Gemini API Key is missing. Please set GEMINI_API_KEY in environment or .env file.")
+        if not self.api_key:
+             raise RuntimeError("Gemini API Key is missing. Mock mode is strictly disabled.")
 
         try:
             img = None

@@ -7,10 +7,7 @@ import json
 import datetime
 import io
 import dataclasses
-from dotenv import load_dotenv
 
-# [v10.7.6-SEC] Load environment variables early
-load_dotenv()
 # [v10.6.7] Force UTF-8 for Windows Console to prevent Encoding Errors with Emojis
 if sys.platform == "win32":
     try:
@@ -374,5 +371,4 @@ if __name__ == "__main__":
     print("UI Access: http://localhost:8000")
     print("API Endpoint: http://localhost:8000/analyze")
     print("="*50 + "\n")
-    port = int(os.environ.get("SKIN_ENGINE_PORT", 8000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)

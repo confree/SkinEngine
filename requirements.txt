@@ -4,5 +4,3 @@ google-generativeai
 loguru
 waitress
 pillow
-python-dotenv
-python-multipart
