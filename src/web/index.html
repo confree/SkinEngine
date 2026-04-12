@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriSkin | Total Beauty AI Senior Guardian</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+</head>
+
+<body>
+    <div class="background-glow"></div>
+
+    <header>
+        <div class="logo">VERISKIN <span>Guardian v2.0</span></div>
+        <div class="status-badge">AI Engine Online</div>
+    </header>
+
+    <main>
+        <section class="analysis-section">
+            <div class="upload-container glass" id="drop-zone">
+                <div class="upload-placeholder" id="placeholder">
+                    <div class="icon">📸</div>
+                    <p>Upload or Drop your Selfie</p>
+                    <span>High-resolution recommended for ITA precision</span>
+                </div>
+                <img id="preview" class="image-preview hidden">
+                <div id="scanner-overlay" class="scanner-overlay hidden">
+                    <div id="face-status" class="face-status">ALIGN YOUR FACE (CENTRAL)</div>
+                    <div class="scan-laser"></div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" hidden>
+            </div>
+
+            <div class="controls">
+                <div class="input-group glass">
+                    <label>Diagnostic Location (Manual/Auto)</label>
+                    <div class="location-wrapper">
+                        <input type="text" id="location" placeholder="Enter City (e.g. Bangkok, Thailand)">
+                        <button id="detect-loc-btn" class="detect-btn" title="Auto-detect my location">📍</button>
+                    </div>
+                    <div id="location-display" class="location-display">Detecting global environment...</div>
+                </div>
+                <button id="analyze-btn" class="btn-primary">Initiate Guardian Analysis</button>
+            </div>
+
+            <!-- Photo Guide Section -->
+            <div class="photo-guide glass animate-up" style="animation-delay: 0.1s;">
+                <h4>✨ Pro Tips for Precise Analysis</h4>
+                <div class="guide-grid">
+                    <div class="g-tip">
+                        <span>☀️</span>
+                        <p>Natural light is best. Avoid harsh shadows or yellow lamps.</p>
+                    </div>
+                    <div class="g-tip">
+                        <span>👓</span>
+                        <p>Remove glasses and look straight at the camera.</p>
+                    </div>
+                    <div class="g-tip">
+                        <span>🧼</span>
+                        <p>A clean face ensures accurate skin texture detection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="results-section hidden">
+            <!-- Professional Dossier Wrapper -->
+            <div class="dossier-wrapper glass animate-up">
+                
+                <!-- 1. Dossier Header (Text Only Focus) -->
+                <div class="lookbook-hero">
+                    <div class="lookbook-header">
+                        <h2>PROFESSIONAL DERMATOLOGICAL DOSSIER</h2>
+                        <p>Comprehensive analysis of skin barrier, geometry, and styling architecture.</p>
+                    </div>
+                </div>
+
+                <div class="dossier-divider"></div>
+
+                <!-- 2. Medical Biometrics Panel -->
+                <div class="dossier-section biometrics-panel">
+                    <div class="panel-header">
+                        <span class="step-num">01</span>
+                        <h3>MEDICAL-GRADE BIOMETRICS</h3>
+                    </div>
+                    <div class="biometrics-grid">
+                        <div class="bio-main">
+                            <div class="skin-age-gauge">
+                                <div class="age-circle">
+                                    <span id="skin-age-val">--</span>
+                                    <small>Skin Age</small>
+                                </div>
+                            </div>
+                            <p id="skin-type" class="highlight">Analyzing...</p>
+                            <span class="bio-desc">피부 광택 및 텍스처를 기반으로 한 종합 판정</span>
+                        </div>
+                        <div class="bio-stats">
+                            <div class="stat-item">
+                                <strong>ITA° Index</strong> 
+                                <span id="ita-val">--</span>
+                                <p class="bio-desc">피부 밝기와 톤을 결정하는 각도 (중간톤/밝은톤 분류)</p>
+                            </div>
+                            <div class="stat-item">
+                                <strong>Melanin</strong> 
+                                <span id="melanin-val">--</span>
+                                <p class="bio-desc">멜라닌 침착 정도 (잡티 및 다크닝 위험도 지수)</p>
+                            </div>
+                            <div class="stat-item">
+                                <strong>Erythema</strong> 
+                                <span id="erythema-val">--</span>
+                                <p class="bio-desc">붉은기 및 홍조 정도 (피부 예민도 및 혈류량 지표)</p>
+                            </div>
+                            <div class="stat-item">
+                                <strong>Elasticity</strong> 
+                                <span id="elasticity-val">--</span>
+                                <p class="bio-desc">피부 탄력 및 회모력 점수 (노화 진행도 정밀 측정)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dossier-divider"></div>
+
+                <!-- 2.5 EXPERT STRATEGIC CONSULTATION (4 Fields) -->
+                <div class="dossier-section consult-panel" id="expert-consult-section">
+                    <div class="panel-header">
+                        <span class="step-num">01.5</span>
+                        <h3>EXPERT STRATEGIC CONSULTATION</h3>
+                    </div>
+                    <div class="consult-grid">
+                        <div class="consult-card summary-card">
+                            <div class="c-head"><span>📝</span> <h4>Executive Summary</h4></div>
+                            <p id="consult-summary">Analyzing correlation...</p>
+                        </div>
+                        <div class="consult-card skincare-card">
+                            <div class="c-head"><span>💧</span> <h4>Skincare Routine</h4></div>
+                            <p id="consult-skincare">Formulating routine...</p>
+                        </div>
+                        <div class="consult-card makeup-card">
+                            <div class="c-head"><span>💄</span> <h4>Makeup Strategy</h4></div>
+                            <p id="consult-makeup">Calculating match...</p>
+                        </div>
+                        <div class="consult-card hair-card">
+                            <div class="c-head"><span>🌿</span> <h4>Scalp & Hair</h4></div>
+                            <p id="consult-hair">Assessing nutrition...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dossier-divider"></div>
+
+                <!-- 3. Professional Dermatological Report (Long Form) -->
+                <div class="dossier-section medical-report">
+                    <div class="panel-header">
+                        <span class="step-num">02</span>
+                        <h3>EXPERT DERMATOLOGICAL DOSSIER</h3>
+                    </div>
+                    <div class="report-content" id="medical-report-text">
+                        <!-- AI Generated A4 Length Content Injected Here -->
+                        Analyzing your skin barriers and problem areas...
+                    </div>
+                </div>
+
+                <div class="dossier-divider"></div>
+
+                <!-- 4. Structural Styling & Makeup Strategy -->
+                <div class="dossier-section styling-architecture">
+                    <div class="panel-header">
+                        <span class="step-num">03</span>
+                        <h3>FACIAL ARCHITECTURE & STYLING</h3>
+                    </div>
+                    <div class="styling-grid">
+                        <div class="style-box">
+                            <h4>Makeup Construction</h4>
+                            <p id="makeup-strategy-text">Formulating climate-aware strategy...</p>
+                        </div>
+                        <div class="style-box">
+                            <h4>Hair Architecture</h4>
+                            <p id="hair-architecture-text">Calculating structural volume...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dossier-divider"></div>
+
+                <!-- 5. Holistic Prescriptions -->
+                <div class="dossier-section prescriptions">
+                    <div class="panel-header">
+                        <span class="step-num">04</span>
+                        <h3>HOLISTIC PRESCRIPTIONS</h3>
+                    </div>
+                    <div class="prescription-list">
+                        <div class="p-card"><strong>Skin Prescription</strong> <span id="p-skin-desc">--</span></div>
+                        <div class="p-card"><strong>Scalp & Shampoo</strong> <span id="shampoo-desc">--</span></div>
+                        <div class="p-card"><strong>Nutritional Advice</strong> <span id="nutrient-desc">--</span></div>
+                    </div>
+                </div>
+
+                <!-- 6. Export Actions -->
+                <div class="dossier-footer">
+                    <button id="download-pdf-btn" class="btn-export">
+                        <span class="icon">📄</span> 전문 피부 보고서(PDF) 다운로드
+                    </button>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

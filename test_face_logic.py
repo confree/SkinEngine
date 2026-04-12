@@ -1,0 +1,51 @@
+import sys
+import os
+import json
+
+# Add project root to path
+sys.path.append(os.getcwd())
+
+from src.core.engine import TotalBeautyGuardianEngine
+
+def test_face_analysis():
+    print("🚀 [TEST] Face Analysis v3.1.7-PRO Verification")
+    engine = TotalBeautyGuardianEngine(api_key="MOCK_KEY")
+    
+    # Simulate face analysis
+    report = engine.analyze_image(
+        image_path="dummy_face.jpg",
+        location="Seoul",
+        registration_data={"age": 28, "sex": "Female", "race": "Asian"},
+        weather_context="Clear, Humidity: 45%",
+        lifestyle_24h="Good sleep",
+        camera_metadata={"luminance": 120},
+        current_routine=["Water Cream"]
+    )
+    
+    report_json = json.loads(report.to_json())
+    
+    print(f"✅ Version: {report_json.get('version')}")
+    print(f"✅ Image Type: {report_json.get('image_type')}")
+    
+    # Check for all 8 major sections
+    sections = ["biometrics", "face", "color", "curation", "consult", "risks", "dossier", "final_action"]
+    for s in sections:
+        status = "FOUND" if s in report_json else "MISSING"
+        print(f"🔍 Section [{s}]: {status}")
+        
+    # Check Final Action details
+    fa = report_json.get("final_action", {})
+    print(f"💡 Final Action Risk: {fa.get('risk_summary')}")
+    print(f"💡 Final Action Tip: {fa.get('professional_tip')}")
+    print(f"💡 Final Action Routine: {fa.get('offset_routine')}")
+    
+    print("-" * 50)
+
+if __name__ == "__main__":
+    # Create dummy image
+    with open("dummy_face.jpg", "wb") as f: f.write(b"face")
+    
+    try:
+        test_face_analysis()
+    finally:
+        if os.path.exists("dummy_face.jpg"): os.remove("dummy_face.jpg")
