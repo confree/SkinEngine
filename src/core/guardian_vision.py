@@ -9,6 +9,10 @@ import os
 import datetime
 from typing import Dict, Any
 from pathlib import Path
+from dotenv import load_dotenv
+
+# [v8.8.4] Load environment variables
+load_dotenv()
 
 class GuardianVisionEngine:
     """
@@ -18,55 +22,59 @@ class GuardianVisionEngine:
     """
     
     def __init__(self, api_key: str = None):
-        # [SECURITY] Mock Mode Strictly Disabled. API Key is MANDATORY.
-        self.api_key = api_key or "AIzaSyD1MVFUZux4oHnk8hEimxgwFqKq7EaOENU"
+        # [SECURITY] Use environment variable with fallback for legacy support
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+        if not self.api_key:
+            raise RuntimeError("Gemini API Key is missing. Please set GEMINI_API_KEY in .env file.")
+        
         self.client = genai.Client(api_key=self.api_key)
         
-        # [VERSION v4.0 - NEXT-GEN STABLE] 
+        # [VERSION v4.1 - STABLE] 
         self.model_id = 'models/gemini-2.5-flash'
         print(f"[READY] [AI-Engine] VeriSkin Guardian Ready: Targeting {self.model_id}")
         
-        # [SKIN ANALYSIS v3.1.7 - PRO LIVE]
+        # [ULTRA-STRICT ANALYSIS v3.1.8 - ENFORCED]
         self.system_instruction = (
-            "귀하는 사용자의 전인적 미(Beauty)를 완성하는 '스마트 뷰티 가디언'입니다.\n"
-            "**[v3.1.7-PRO 피부 정밀 분석 지침]**:\n"
-            "1. **생체 지표 (Biometrics)**: 나이, ITA(피부톤 수치), 타입, 탄력, 멜라닌/홍반 지수 등을 정밀 산출하십시오.\n"
-            "2. **구조 분석 (Face Geometry)**: 얼굴형, 비율, 대칭성 및 스타일링 권장 사항을 분석하십시오.\n"
-            "3. **색채 과학 (Personal Color)**: CIELAB 수치, 퍼스털 컬러 타입 및 권장 팔레트를 도출하십시오.\n"
-            "4. **맞춤 큐레이션 (Curation)**: 현재 기후를 반영한 스킨/메이크업/헤어 처방을 제시하십시오.\n"
-            "5. **전문가 조언 (Consult)**: 각 영역별 텍스트 중심의 요약 조언을 제공하십시오.\n"
-            "6. **위험 필터 (Risks)**: 성분 충돌, 산화 위험, 블랙리스트 성분 등 실시간 위협 요소를 필터링하십시오.\n"
-            "7. **심층 도시에 (Dossier)**: 300자 이상의 심층 텍스트 보고서, 메이크업 전략, 이너뷰티 권고를 포함하십시오.\n"
-            "8. **최종 액션 플랜 (Final Action)**: 종합 리스크 요약, 전문가 팁, 그리고 3단계 오프셋 루틴을 처방하십시오.\n"
-            "**[응답 형식]**: 반드시 아래 JSON 구조 그대로 응답하고, 코드블럭으로 감싸십시오.\n"
+            "당신은 반드시 다음의 JSON 구조만을 반환해야 하는 '전문 Skin 분석기'입니다.\n\n"
+            "### [필수 JSON 구조 - 반드시 이 키값들을 포함할 것]\n"
             "{\n"
-            "  \"version\": \"3.1.7-PRO\",\n"
+            "  \"version\": \"3.1.8-PRO\",\n"
             "  \"image_type\": \"face\",\n"
-            "  \"biometrics\": { \"skin_age\": int, \"ita\": float, \"skin_type\": \"string\", \"skin_hex\": \"string\", \"elasticity_score\": \"float(0.0-100.0)\", \"melanin_index\": \"float(0.0-100.0)\", \"erythema_index\": \"float(0.0-100.0)\", \"pore_density\": \"string\", \"wrinkle_score\": \"float(0.0-100.0)\", \"age_range\": \"string\", \"confidence_score\": int },\n"
-            "  \"face\": { \"shape\": \"string\", \"length_width_ratio\": float, \"asymmetry\": \"string\", \"jaw_tension\": \"string\", \"styling_recommendations\": { \"hair\": \"string\", \"brows\": \"string\" } },\n"
-            "  \"color\": { \"cielab\": { \"L\": float, \"a\": float, \"b\": float }, \"seasonal_type\": \"string\", \"undertone\": \"string\", \"recommended_palette\": [], \"eye_hair_match\": \"string\" },\n"
-            "  \"curation\": { \"skincare_prescription\": \"string\", \"makeup_prescription\": \"string\", \"hair_prescription\": \"string\", \"climate_adjustment\": \"string\" },\n"
-            "  \"consult\": { \"summary\": \"string\", \"skincare\": \"string\", \"makeup\": \"string\", \"hair\": \"string\" },\n"
-            "  \"risks\": { \"alert_level\": \"string\", \"makeup_oxidation_risk\": \"string\", \"scalp_thermal_risk\": \"string\", \"conflict_report\": \"string\", \"blacklist_ingredients\": [] },\n"
-            "  \"dossier\": { \"medical_report\": \"string(300자 이상)\", \"makeup_strategy\": \"string\", \"hair_architecture\": \"string\", \"visual_prompt\": \"string\", \"shampoo_prescription\": \"string\", \"nutritional_advice\": \"string\" },\n"
-            "  \"final_action\": { \"risk_summary\": \"string\", \"professional_tip\": \"string\", \"offset_routine\": [] },\n"
-            "  \"scores\": { \"total_health\": \"int(0-100)\", \"radiance\": \"int(0-100)\", \"climate_adaptability\": \"int(0-100)\", \"vitality\": \"int(0-100)\", \"resilience\": \"int(0-100)\" }\n"
-            "}\n"
+            "  \"biometrics\": {\n"
+            "    \"skin_age\": [현재 나이를 반영한 정수],\n"
+            "    \"elasticity_score\": [0-100 float],\n"
+            "    \"wrinkle_score\": [0-100 float],\n"
+            "    \"ita\": 35.0, \"skin_type\": \"건성\", \"skin_hex\": \"#FFFFFF\", \"melanin_index\": 40.0, \"erythema_index\": 20.0, \"pore_density\": \"Normal\", \"age_range\": \"50s\", \"confidence_score\": 90\n"
+            "  },\n"
+            "  \"face\": { \"shape\": \"Oval\", \"length_width_ratio\": 1.4, \"asymmetry\": \"None\", \"jaw_tension\": \"Normal\", \"styling_recommendations\": { \"hair\": \"Short\", \"brows\": \"Straight\" } },\n"
+            "  \"color\": { \"cielab\": { \"L\": 65.0, \"a\": 10.0, \"b\": 20.0 }, \"seasonal_type\": \"Spring\", \"undertone\": \"Warm\", \"recommended_palette\": [], \"eye_hair_match\": \"Good\" },\n"
+            "  \"curation\": { \"skincare_prescription\": \"Moisturize\", \"makeup_prescription\": \"Glow\", \"hair_prescription\": \"Volume\", \"climate_adjustment\": \"Hydrate\" },\n"
+            "  \"consult\": { \"summary\": \"String\", \"skincare\": \"String\", \"makeup\": \"String\", \"hair\": \"String\", \"visual_progress\": \"String\", \"lifestyle_causality\": \"String\", \"efficacy\": [], \"conflicts\": [] },\n"
+            "  \"dossier\": { \"medical_report\": \"String\", \"makeup_strategy\": \"String\", \"hair_architecture\": \"String\", \"visual_prompt\": \"String\", \"shampoo_prescription\": \"String\", \"nutritional_advice\": \"String\" },\n"
+            "  \"final_action\": { \"offset_routine\": [], \"professional_tip\": \"String\", \"future_prediction\": {}, \"peer_context\": \"String\" },\n"
+            "  \"scores\": { \"total_health\": 75, \"radiance\": 75, \"climate_adaptability\": 75, \"vitality\": 75, \"resilience\": 75 }\n"
+            "}\n\n"
+            "### [중요 지침]\n"
+            "1. `biometrics` 내의 모든 수치는 반드시 0.0-100.0 사이의 숫자로 채우십시오.\n"
+            "2. 사용자의 실제 나이가 50세라면 `skin_age`는 45~55 사이의 숫자로 반드시 추정하여 기입하십시오.\n"
+            "3. 절대 '알 수 없음'이나 '데이터 없음'으로 필드를 생략하지 마십시오. 추정치라도 반드시 넣어야 합니다.\n"
+            "4. `dossier` 내의 모든 리포트 내용은 300자 이상의 풍부한 한국어로 작성하십시오.\n"
+            "5. 이전 버전(1.2.1)의 양식을 절대 사용하지 마십시오. 오직 위 구조만 허용됩니다."
         )
 
-        # [VANITY/EFFICACY ANALYSIS v1.2.0-VANITY-PRO]
+        # [VANITY/EFFICACY ANALYSIS v1.2.1-VANITY-PRO]
         self.vanity_instruction = (
             "귀하는 사용자의 피부 변화를 정밀하게 추적하고 제품의 효능을 입증하는 '임상 뷰티 가디언'입니다.\n"
-            "**[v1.2.0-VANITY-PRO 루틴 효능 분석 지침]**:\n"
-            "1. **미세 변화 감지**: 이전 상태와 비교하여 탄력, 주름, 멜라닌 지수의 미세한 변화(1~2% 내외)를 포착하여 수치화하십시오.\n"
-            "2. **인과 관계 추론 (Causality)**: 루틴 성분, `previous_advice`(이전 조언), 그리고 생활 방식(수면, 음수)의 조화가 현재 피부 변화에 어떤 영향을 주었는지 '인과 관계' 중심으로 서술하십시오.\n"
-            "3. **효능 입증 (Efficacy Proof)**: `skin_context`의 수치 변화와 시각적 변화가 일치하는지 검증하고, 현재 루틴의 효능을 궁합 점수로 환산하십시오.\n"
-            "4. **미래 예측 및 사회적 증명**: 개선 속도를 바탕으로 미래의 마일스톤 예측과 대조 데이터를 제시하십시오.\n"
-            "**[응답 형식]**: 아래 JSON 구조를 엄수하여 코드블럭으로 응답하십시오.\n"
+            "**[v1.2.1-VANITY-PRO 루틴 효능 분석 지침]**:\n"
+            "1. **환경 보정**: 이전 촬영 데이터(`skin_context`)가 있을 경우, 현재 이미지와 조명 상태를 대조하여 조명 차이에 의한 오차를 감안한 뒤 순수한 피부 변화값(1~2% 내외)을 산출하십시오.\n"
+            "2. **수치 엄격성**: 모든 점수와 변화율은 **0-100** 범위를 준수하십시오.\n"
+            "3. **인과 관계 추론**: 루틴 성분과 생활 방식이 현재 피부 변화에 준 영향을 분석하십시오.\n"
+            "4. **효능 입증**: 현재 루틴의 효능을 궁합 점수로 환산하십시오.\n"
+            "**[응답 형식]**: JSON 구조 엄수.\n"
             "{\n"
             "  \"analysis_id\": \"UUID-V10-SYNC\",\n"
             "  \"compatibility_score\": int,\n"
-            "  \"version\": \"1.2.0-VANITY-PRO\",\n"
+            "  \"version\": \"1.2.1-VANITY-PRO\",\n"
             "  \"scores\": { \"total_health\": int, \"radiance\": int, \"vitality\": int, \"resilience\": int, \"climate_adaptability\": int },\n"
             "  \"consult\": {\n"
             "    \"summary\": \"string\",\n"
@@ -104,14 +112,19 @@ class GuardianVisionEngine:
             "}\n"
         )
 
-        # [ROUTINE CONSULTATION v1.0.0]
+        # [ROUTINE CONSULTATION v1.2.0 - SYNERGY FOCUS]
         self.routine_consultation_instruction = (
-            "귀하는 리얼타임 루틴 진단 전문가 '스마트 루틴 가디언'입니다.\n"
+            "귀하는 리얼타임 루틴 진단 및 제품 상성 분석 전문가 '스마트 루틴 가디언'입니다.\n"
+            "**[v1.2.0-SYNERGY 분석 지침]**:\n"
+            "1. **시너비 분석**: 루틴 내 제품들(A+B, B+C 등) 간의 기능적 보완 작용을 분석하여 `synergy_score`를 산출하십시오.\n"
+            "2. **성분 충돌**: 레티놀+비타민C, 고농도 AHA+BHA 등 자극을 유발하거나 효능을 상쇄하는 조합을 정밀 추적하십시오.\n"
+            "3. **기후-피부 최적화**: 현재 환경(온도, 습도, UV)에 해당 루틴이 얼마나 적합한지 평가하십시오.\n"
+            "4. **리스크 요약**: 발견된 핵심 위험 요소를 `risk_summary`에 150자 내외로 기술하십시오.\n"
             "**[응답 형식]**: JSON 구조 엄수.\n"
             "{\n"
-            "  \"version\": \"1.0.0\",\n"
+            "  \"version\": \"1.2.0-SYNERGY\",\n"
             "  \"image_type\": \"routine\",\n"
-            "  \"compatibility_score\": int,\n"
+            "  \"synergy_score\": int(0-100),\n"
             "  \"consult\": {\n"
             "    \"summary\": \"string\",\n"
             "    \"skincare\": \"string\",\n"
@@ -121,18 +134,19 @@ class GuardianVisionEngine:
             "  \"final_action\": { \"offset_routine\": [], \"professional_tip\": \"string\", \"risk_summary\": \"string\" },\n"
             "  \"scores\": { \"total_health\": int, \"radiance\": int, \"vitality\": int, \"resilience\": int, \"climate_adaptability\": int }\n"
             "}\n"
-            "**주의**: image_type은 반드시 \"routine\"으로 고정하십시오."
+            "**주의**: `synergy_score`는 반드시 단순 수치(0-100)로 산출하십시오."
         )
 
-        # [COSMETIC HARMONIZATION v1.0.0]
+        # [COSMETIC HARMONIZATION v1.0.1 - ULTRA STRICT]
         self.cosmetic_instruction = (
             "귀하는 사용자의 현재 피부 상태와 화장품 사이의 화합(Harmony)을 정밀 분석하는 '뷰티 융합 전문가'입니다.\\n"
-            "**[v1.0.0-COSMETIC-PRO 분석 지침]**:\\n"
-            "1. **조밀도 및 융합 분석**: 선택된 제품이 사용자 피부 타입 및 현재 컨디션(수분도, 유분도 등)에 얼마나 잘 융합될지 분석하십시오.\\n"
-            "2. **성분-피부 궁합**: 특정 성분이 사용자의 피부 고민(트러블, 건조 등)에 미칠 긍정적/부정적 영향을 도출하십시오.\\n"
-            "3. **리얼타임 기후 최적화**: 현재 위치와 날씨 정보를 바탕으로, 해당 화장품을 사용하기에 가장 적합한 시간대나 방법을 제안하십시오.\\n"
-            "4. **시너지 및 충돌 리포트**: 기존 사용 중인 루틴 제품과의 성분 충돌 가능성이나 기대되는 시너지를 요약하십시오.\\n"
-            "**[응답 형식]**: 반드시 아래 JSON 구조 그대로 응답하고, 코드블럭으로 감싸십시오.\\n"
+            "**[v1.0.1-COSMETIC-PRO 분석 지침]**:\\n"
+            "1. **이미지 인식 우선**: 만약 'Target Product' 정보가 모호하다면, 첨부된 사진 속의 화장품 라벨, 브랜드명, 전성분표, 혹은 제형을 직접 시각적으로 인식하여 분석하십시오.\\n"
+            "2. **데이터 부족 핑계 금지**: 사용자의 피부 타입 정보가 없더라도 기후 정보와 사진 속 피부 상태를 바탕으로 최선의 추정치를 계산하십시오. 절대 0점을 주지 마십시오.\\n"
+            "3. **조밀도 및 융합 분석**: 선택된 제품이 사용자 피부 컨디션에 얼마나 잘 융합될지 분석하십시오.\\n"
+            "4. **성분-피부 궁합**: 특정 성분이 사용자의 피부 고민에 미칠 긍정적/부정적 영향을 도출하십시오.\\n"
+            "5. **리얼타임 기후 최적화**: 현재 위치와 날씨 정보를 바탕으로, 해당 화장품을 사용하기에 가장 적합한 시간대나 방법을 제안하십시오.\\n"
+            "**[응답 형식]**: 반드시 아래 JSON 구조 그대로 응답하고, 수치는 0을 피하고 반드시 추정치를 넣으십시오.\\n"
             "{\\n"
             "  \\\"version\\\": \\\"1.0.0-COSMETIC\\\",\\n"
             "  \\\"image_type\\\": \\\"cosmetic\\\",\\n"
@@ -172,23 +186,28 @@ class GuardianVisionEngine:
                     with open(image_path, 'rb') as f:
                         header = f.read(20)
                         if header.startswith(b'---') or b'WebKitForm' in header:
-                            raise ValueError("Data encoding error: Received multipart boundary indeed of raw binary image. Please check gateway forwarding.")
+                            raise ValueError("Data encoding error: Received multipart boundary indeed of raw binary image.")
                     
                     img = Image.open(image_path)
                     img.verify() # First pass verification
                     img = Image.open(image_path) # Re-open for actual use
                 except Exception as img_err:
                     raise ValueError(f"Invalid or corrupted image format: {img_err}")
+            else:
+                # [v12.0.5] Support Image-less analysis (e.g. Cosmetic / Routine mode)
+                print(f"[AI-Engine] Image-less request detected for {analysis_type}. Proceeding with text-only context.")
             
             location = context.get("location", "Unknown Location")
             weather = context.get("weather", "Unknown Weather")
             lifestyle = context.get("lifestyle", "Not provided")
             user_profile = context.get("user_profile", "Anonymous")
             
-            print(f"📡 [AI-Engine] Analyzing {analysis_type} for {location} (User: {user_profile})...")
+            # [v11.7.8] Truncate large profile data in console to prevent UnicodeEncodeError crash
+            safe_profile_summary = str(user_profile)[:100] + "..." if len(str(user_profile)) > 100 else str(user_profile)
+            print(f"[AI-Engine] Analyzing {analysis_type} for {location} (User: {safe_profile_summary})...")
             
             if analysis_type == "vanity":
-                instruction = self.vanity_instruction
+                instruction = self.system_instruction
             elif analysis_type == "routine_consultation" or analysis_type == "routine":
                 instruction = self.routine_consultation_instruction
             elif analysis_type == "product":
@@ -198,13 +217,22 @@ class GuardianVisionEngine:
             else:
                 instruction = self.system_instruction
             
+            # [v13.0.0] Bridge context for Delta-Tracking (Map engine key to prompt key)
+            prev_analysis = context.get("previous_analysis") or context.get("skin_context")
+
             env_constraint = (
                 f"- Analysis Mode: {analysis_type}\n"
+                f"- Target Product: {context.get('target_product', 'Not specified')}\n"
                 f"- Routine: {context.get('routine', 'Not provided')}\n"
-                f"- Skin Context: {context.get('skin_context', 'Not provided')}\n"
+                f"- Previous Analysis: {prev_analysis if prev_analysis else 'None provided (Focus on baseline analysis)'}\n"
                 f"- Location: {location} (Climate: {weather})\n"
-                f"- Preferred Language: {context.get('lang', 'ko-KR')}\n"
-                f"Analyze strictly based on data. NO HARDCODING."
+                f"- Preferred Language: {context.get('lang', 'en')}\n"
+                f"\n[CRITICAL: COMPARATIVE ANALYSIS (Delta-Tracking)]\n"
+                f"1. IF 'Previous Analysis' is provided, compare CURRENT biometrics/scores with the previous ones.\n"
+                f"2. Explicitly mention the score changes in 'summary' and 'visual_progress' (e.g., 'Previous 78 -> Current 72').\n"
+                f"3. Explain WHY the scores changed (e.g. climate impact, routine efficacy, or user's lifestyle causality).\n"
+                f"4. If this is the FIRST scan (None provided), focus on establishing a strong baseline.\n"
+                f"Analyze strictly based on the target product and user data provided above. NO HARDCODING."
             )
             
             contents = [instruction + env_constraint]
@@ -213,7 +241,10 @@ class GuardianVisionEngine:
             
             response = self.client.models.generate_content(
                 model=self.model_id,
-                contents=contents
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    temperature=0.0
+                )
             )
             
             if response and response.text:
@@ -224,14 +255,14 @@ class GuardianVisionEngine:
                     json_str = json_str.split("```")[1].split("```")[0].strip()
                 
                 json_dict = json.loads(json_str, strict=False)
-                print(f"✅ [AI-Engine] Analysis ({analysis_type}) Successful")
+                print(f"[AI-Engine] Analysis ({analysis_type}) Successful")
                 self._save_to_logs(json_dict, analysis_type=analysis_type)
                 return json_dict
             else:
                 raise ValueError("Empty response from AI")
             
         except Exception as e:
-            print(f"❌ [AI-Engine] Analysis failed: {e}")
+            print(f"[AI-Engine] Analysis failed: {e}")
             raise e
 
     def _save_to_logs(self, data: Dict[str, Any], is_mock: bool = False, analysis_type: str = "general"):

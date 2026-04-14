@@ -4,6 +4,8 @@ from src.core.environment import EnvironmentEngine
 from src.core.interaction import InteractionEngine
 from src.core.guardian_vision import GuardianVisionEngine
 from typing import List, Dict, Any, Tuple
+import json
+import os
 
 class TotalBeautyGuardianEngine:
     """
@@ -30,6 +32,32 @@ class TotalBeautyGuardianEngine:
             "Ammonia": "Hair cuticle damage / Scalp burn risk."
         }
 
+    def analyze_vanity(self, 
+                       image_path: str, 
+                       location: str = "Seoul, Korea", 
+                       registration_data: Dict[str, Any] = {}, 
+                       weather_context: str = None, 
+                       lifestyle_24h: str = "Balanced",
+                       camera_metadata: Dict[str, Any] = {},
+                       current_routine: List[str] = [],
+                       lang: str = "en",
+                       skin_context: Dict[str, Any] = {}) -> Dict[str, Any]:
+        """
+        [v11.5.0] Specialized Skin Efficacy Tracking (Vanity Mode).
+        """
+        return self.analyze_image(
+            image_path=image_path,
+            location=location,
+            current_routine=current_routine,
+            registration_data=registration_data,
+            weather_context=weather_context,
+            lifestyle_24h=lifestyle_24h,
+            camera_metadata=camera_metadata,
+            lang=lang,
+            skin_context=skin_context,
+            analysis_type="vanity"
+        )
+
     def analyze_image(self, 
                       image_path: str, 
                       location: str, 
@@ -38,8 +66,9 @@ class TotalBeautyGuardianEngine:
                       lifestyle_24h: str = "Balanced",        # 🍎 Diet, Sleep, etc.
                       camera_metadata: Dict[str, Any] = {},   # 📸 Luminance, Temp
                       current_routine: List[str] = [],
-                      lang: str = "ko-KR",
-                      analysis_type: str = "general") -> TotalBeautyGuardianReport:
+                      lang: str = "en",
+                      analysis_type: str = "general",
+                      skin_context: Dict[str, Any] = {}) -> TotalBeautyGuardianReport:
         """
         Total Beauty Analysis via Gemini Vision Engine (v3.5 Location-Aware).
         """
@@ -60,6 +89,7 @@ class TotalBeautyGuardianEngine:
                 "lifestyle": lifestyle_24h,
                 "camera": camera_metadata,
                 "user_profile": registration_data,
+                "previous_analysis": skin_context, # [v13.0.0] Bridge context for Delta-Tracking
                 "lang": lang
             },
             analysis_type=analysis_type
@@ -90,18 +120,44 @@ class TotalBeautyGuardianEngine:
             raw_a = cielab.get("a") or biometrics_data.get("a_star") or 5
             raw_b = cielab.get("b") or biometrics_data.get("b_star") or 15
             
-            # Lighting Normalization
+            # Lighting & Color Normalization (v3.1.8-PRO)
             reference_l = 62.0  
-            normalization_factor = 0.5 
-            normalized_l = raw_l + (reference_l - raw_l) * normalization_factor
+            normalization_factor_l = 0.5 
+            normalized_l = raw_l + (reference_l - raw_l) * normalization_factor_l
             
-            lab = {"L": normalized_l, "a": raw_a, "b": raw_b}
-            ita = biometrics_data.get("ita") or round(self.biometrics.calculate_ita(lab["L"], lab["b"]), 1)
+            # [STABILIZATION] Yellow/Blue (b*) Normalization
+            reference_b = 18.0
+            normalization_factor_b = 0.3
+            normalized_b = raw_b + (reference_b - raw_b) * normalization_factor_b
+            
+            lab = {"L": normalized_l, "a": raw_a, "b": normalized_b}
+            
+            # [STABILIZATION] Prioritize programmatic ITA over AI predicted ITA for consistency
+            calculated_ita = round(self.biometrics.calculate_ita(lab["L"], lab["b"]), 1)
+            ita = calculated_ita 
             skin_type = biometrics_data.get("skin_type") or self.biometrics.classify_skin_type(ita)
             
+            # [v12.9.12] 🛡️ DEFINE FACE & COLOR STRUCTURES
+            face_data = raw_analysis.get("face", {})
+            face_geometry = FaceGeometry(
+                shape=face_data.get("shape"),
+                length_width_ratio=face_data.get("length_width_ratio", 1.0),
+                asymmetry=face_data.get("asymmetry"),
+                jaw_tension=face_data.get("jaw_tension"),
+                styling_recommendations=face_data.get("styling_recommendations", {})
+            )
+            
+            personal_color = PersonalColor(
+                cielab=lab,
+                seasonal_type=color_data.get("seasonal_type"),
+                undertone=color_data.get("undertone"),
+                recommended_palette=color_data.get("recommended_palette", []),
+                eye_hair_match=color_data.get("eye_hair_match")
+            )
+            
             # [CLINICAL LOGIC] Factor in OR & R2 for risk weighting
-            texture_desc = biometrics_data.get("pore_density", "").lower() # Use pore_density as texture proxy if needed
-            jaw_tension = raw_analysis.get("face", {}).get("jaw_tension", "Normal")
+            texture_desc = biometrics_data.get("pore_density", "").lower()
+            jaw_tension = face_data.get("jaw_tension", "Normal")
             
             # Age Range from AI Inference
             age_range = biometrics_data.get("age_range", "Unknown")
@@ -113,91 +169,137 @@ class TotalBeautyGuardianEngine:
                     age_int = int(reg_age)
                     age_range = f"{(age_int // 10) * 10}대 " + ("초반" if age_int % 10 < 5 else "후반")
                 except (ValueError, TypeError):
-                    pass # Keep AI inferred age_range if registration data is invalid
-            
-            # Real skin age from AI
-            final_skin_age = biometrics_data.get("skin_age", 30)
-        else:
-            # Ingredient/Food mode: Use environment-based defaults for score generation
-            lab = {"L": 62.0, "a": 5.0, "b": 15.0} # Balanced Neutral
-            ita = 45.0
-            skin_type = "Normal (Reference)"
-            final_skin_age = 0
-            age_range = "N/A"
-            texture_desc = "N/A"
-            jaw_tension = "Normal"
+                    pass 
 
-        biometrics = ProfessionalBiometrics(
-            skin_age=final_skin_age,
-            ita=ita,
-            skin_type=skin_type,
-            skin_hex=f"rgb({int(lab['L']*2.5)}, {int(lab['L']*2.2)}, {int(lab['L']*1.8)})",
-            elasticity_score=biometrics_data.get("elasticity_score") or (0.85 if "Low" in jaw_tension else 0.6),
-            melanin_index=biometrics_data.get("melanin_index") or round(lab["b"] * 2.1, 1),
-            erythema_index=biometrics_data.get("erythema_index") or round(lab["a"] * 3.5, 1),
-            pore_density=biometrics_data.get("pore_density", "Normal") if image_type == "face" else f"Analyzing {image_type.capitalize()}",
-            wrinkle_score=biometrics_data.get("wrinkle_score") or (0.4 if "lines" in texture_desc else 0.1),
-            age_range=age_range,
-            confidence_score=confidence
-        )
-        
-        # Step 4: Color Science (Mapping)
-        color_data = raw_analysis.get("color", {})
-        personal_color = PersonalColor(
-            cielab=lab,
-            seasonal_type=color_data.get("seasonal_type", "Unknown"),
-            undertone=color_data.get("undertone", "Neutral"),
-            recommended_palette=color_data.get("recommended_palette", []),
-            eye_hair_match=color_data.get("eye_hair_match", "Eye: None, Hair: None")
-        )
-        
-        # Step 5: Face Geometry (Mapping)
-        face_data = raw_analysis.get("face", {})
-        face_geometry = FaceGeometry(
-            shape=face_data.get("shape", "Oval"),
-            length_width_ratio=face_data.get("length_width_ratio", 1.4),
-            asymmetry=face_data.get("asymmetry", "Normal"),
-            jaw_tension=face_data.get("jaw_tension", "Normal"),
-            styling_recommendations=face_data.get("styling_recommendations", {"hair": "Professional layer cut", "brows": "Natural curve"})
-        )
-        
-        # Step 6: Professional Dossier (v3.0 Upgrade - Legal Schema Sync)
-        ai_dossier = raw_analysis.get("dossier", {})
-        
-        # 🛡️ Strong Fallback for 500+ character requirement
-        default_long_report = (
-            "현재 고객님의 피부 상태를 분석 중입니다. 일시적인 데이터 지연이 발생할 경우 이 문구가 표시됩니다. "
-            "잠시 후 다시 시도해 주시면 인공지능 가디언이 500자 이상의 상세한 정밀 분석 리포트를 생성하여 "
-            "고객님의 현재 기후 환경과 식단 패턴을 대조한 개인 맞춤형 케어 솔루션을 제공해 드릴 예정입니다."
-        )
+            # [v12.9.11] 🛡️ FORCE SYNC: Ensure debug file is written immediately
+            try:
+                debug_path = "logs/DEBUG_LAST_AI_RAW.json"
+                with open(debug_path, "w", encoding="utf-8") as f:
+                    json.dump(raw_analysis, f, indent=4, ensure_ascii=False)
+                    f.flush()
+                    os.fsync(f.fileno())
+            except Exception as debug_err:
+                print(f"[DEBUG-SYSTEM] Write failed: {debug_err}")
+
+            # [v12.9.0] 🛡️ NO FALLBACK POLICY: Raise error if AI data is incomplete
+            final_skin_age = biometrics_data.get("skin_age")
+            if final_skin_age is None:
+                # [CRITICAL] Provide raw data back to client for instant debugging
+                error_msg = f"AI failed to determine 'skin_age'. RAW_DATA: {json.dumps(raw_analysis)}"
+                raise ValueError(error_msg)
+                
+            # [v12.9.0] 🛡️ Strict Biometrics Validation
+            elasticity = biometrics_data.get("elasticity_score")
+            wrinkle = biometrics_data.get("wrinkle_score")
+            
+            if elasticity is None or wrinkle is None:
+                raise ValueError(f"Missing critical biometrics: elasticity={elasticity}, wrinkle={wrinkle}")
+
+            biometrics = ProfessionalBiometrics(
+                skin_age=final_skin_age,
+                ita=ita,
+                skin_type=skin_type,
+                skin_hex=f"rgb({int(lab['L']*2.5)}, {int(lab['L']*2.2)}, {int(lab['L']*1.8)})",
+                elasticity_score=elasticity,
+                melanin_index=biometrics_data.get("melanin_index"),
+                erythema_index=biometrics_data.get("erythema_index"),
+                pore_density=biometrics_data.get("pore_density"),
+                wrinkle_score=wrinkle,
+                age_range=age_range,
+                confidence_score=confidence
+            )
+
+            # [v12.9.15] 🛡️ Validation for newly Strict Biometrics
+            if biometrics.melanin_index is None or biometrics.erythema_index is None:
+                raise ValueError(f"Missing melanin/erythema data. RAW: {json.dumps(biometrics_data)}")
+
+        else:
+            # Ingredient/Food mode
+            raise ValueError(f"Unsupported analysis type for biometrics: {image_type}")
+
+        # [v12.9.0] 🛡️ Dossier & Consult Validation
+        ai_dossier = raw_analysis.get("dossier")
+        if not ai_dossier:
+            raise ValueError("AI failed to generate 'dossier' report.")
 
         dossier = ProfessionalDossier(
-            medical_report=ai_dossier.get("medical_report") or default_long_report,
-            makeup_strategy=ai_dossier.get("makeup_strategy") or "기후 맞춤형 메이크업 전략을 준비 중입니다.",
-            hair_architecture=ai_dossier.get("hair_architecture") or "헤어 스타일링 보완 가이드를 준비 중입니다.",
+            medical_report=ai_dossier.get("medical_report"),
+            makeup_strategy=ai_dossier.get("makeup_strategy"),
+            hair_architecture=ai_dossier.get("hair_architecture"),
             visual_prompt=ai_dossier.get("visual_prompt") or "",
-            shampoo_prescription=ai_dossier.get("shampoo_prescription") or "N/A",
-            nutritional_advice=ai_dossier.get("nutritional_advice") or "건강 증진을 위한 영양 권고 사항을 분석 중입니다."
+            shampoo_prescription=ai_dossier.get("shampoo_prescription"),
+            nutritional_advice=ai_dossier.get("nutritional_advice")
         )
+
+        for field in ["medical_report", "makeup_strategy", "hair_architecture", "shampoo_prescription", "nutritional_advice"]:
+            if not getattr(dossier, field):
+                raise ValueError(f"AI Dossier is missing critical field: {field}")
         
-        # Step 7: Curation & Risks
+        # Step 7: Curation & Risks (Must be present)
         curation = self._generate_integrated_curation(skin_type, face_geometry, personal_color, weather)
         risks = self._generate_risk_filter(lab, weather, current_routine, raw_analysis.get("risks", {}))
         
-        # Step 8: Expert Consultation (AI 생성 우선 → 폴백 템플릿)
+        # Step 8: Expert Consultation
         ai_consult = raw_analysis.get("expert_consultation", raw_analysis.get("consult", {}))
+        if not ai_consult:
+            raise ValueError("AI failed to generate 'consult' summary.")
+
         consult = self._generate_expert_consult(biometrics, face_geometry, personal_color, weather, ai_consult)
         
-        # Step 9: Final Action Plan (v3.1.7-PRO NEW)
-        fa_data = raw_analysis.get("final_action", {})
+        # Step 9: Final Action Plan
+        fa_data = raw_analysis.get("final_action")
+        if not fa_data:
+            raise ValueError("AI failed to generate 'final_action' plan.")
+
         final_action = FinalAction(
-            risk_summary=fa_data.get("risk_summary", "분석된 특이 위험 요인이 없습니다."),
-            professional_tip=fa_data.get("professional_tip", "지속적인 자외선 차단과 보습 관리를 권장합니다."),
+            risk_summary=fa_data.get("risk_summary"),
+            professional_tip=fa_data.get("professional_tip"),
             offset_routine=fa_data.get("offset_routine", [])
         )
         
-        # Step 10: Skin Scoring (v3.1.7-PRO NEW)
-        scores = self._calculate_skin_scores(biometrics, face_geometry, personal_color, weather)
+        # Step 10: Skin Scoring (v3.1.8-PRO STABILIZED)
+        historical_records = []
+        comparison_result = None
+        
+        if skin_context and "metadata" in skin_context:
+            # Handle recursive metadata or flat previous analysis
+            hist_meta = skin_context.get("metadata", {})
+            historical_records = [hist_meta]
+        elif isinstance(skin_context, dict) and "scores" in skin_context:
+            historical_records = [skin_context]
+
+        # [STABILIZATION] Intelligent Smoothing (Moving Average)
+        historical_scores = [h.get("scores", {}) for h in historical_records]
+        scores = self._calculate_skin_scores(biometrics, face_geometry, personal_color, weather, historical_scores)
+
+        if historical_records:
+            last = historical_records[0]
+            last_scores = last.get("scores", {})
+            
+            # [v15.6.0] 🧬 Calculate explicit Delta (Comparison Logic)
+            current_map = {
+                "total_health": scores.total_health,
+                "radiance": scores.radiance,
+                "vitality": scores.vitality,
+                "resilience": scores.resilience
+            }
+            
+            deltas = {}
+            for key in current_map:
+                prev_val = last_scores.get(key)
+                if prev_val is not None:
+                    try:
+                        diff = round(float(current_map[key]) - float(prev_val), 1)
+                        deltas[f"{key}_delta"] = f"+{diff}" if diff > 0 else str(diff)
+                    except (ValueError, TypeError):
+                        continue
+            
+            comparison_result = {
+                "status": "stable" if abs(float(deltas.get("total_health_delta", 0))) < 5 else ("improved" if float(deltas.get("total_health_delta", 0)) > 0 else "declining"),
+                "deltas": deltas,
+                "summary": raw_analysis.get("consult", {}).get("visual_progress") or "시간에 따른 피부 변화가 감지되었습니다.",
+                "previous_date": last.get("created_at") or "전회차"
+            }
         
         # Final Report
         report = TotalBeautyGuardianReport(
@@ -211,7 +313,8 @@ class TotalBeautyGuardianEngine:
             dossier=dossier,
             final_action=final_action,
             scores=scores,
-            reliability_message=reliability_message
+            reliability_message=reliability_message,
+            comparison=comparison_result
         )
         report.image_type = image_type # Add dynamic tag for filter
         return report
@@ -223,7 +326,7 @@ class TotalBeautyGuardianEngine:
                                      registration_data: Dict[str, Any] = {},
                                      weather_context: str = None,
                                      camera_metadata: Dict[str, Any] = {},
-                                     lang: str = "ko-KR") -> Dict[str, Any]:
+                                     lang: str = "en") -> Dict[str, Any]:
         """
         Specialized analysis for Routine Consultation based on existing skin context.
         """
@@ -258,31 +361,23 @@ class TotalBeautyGuardianEngine:
                        lifestyle_24h: str = "Balanced",
                        camera_metadata: Dict[str, Any] = {},
                        current_routine: List[str] = [],
-                       lang: str = "ko-KR") -> Dict[str, Any]:
+                       lang: str = "en",
+                       skin_context: Dict[str, Any] = {}) -> Dict[str, Any]:
         """
         Specialized analysis for Vanity/Efficacy tracking (v1.2.0-VANITY-PRO).
         """
-        weather = self.environment.fetch_weather(location)
-        current_climate = weather_context or f"{weather.get('weather_desc', 'Unknown')} (Humidity: {weather.get('humidity', '--')}%)"
-
-        context = {
-            "location": location,
-            "weather": current_climate,
-            "lifestyle": lifestyle_24h,
-            "camera": camera_metadata,
-            "user_profile": registration_data,
-            "routine": current_routine,
-            "lang": lang
-        }
-
-        # Call Vision Engine for Vanity Analysis
-        analysis_result = self.vision.analyze_image(
+        return self.analyze_image(
             image_path=image_path,
-            context=context,
+            location=location,
+            current_routine=current_routine,
+            registration_data=registration_data,
+            weather_context=weather_context,
+            lifestyle_24h=lifestyle_24h,
+            camera_metadata=camera_metadata,
+            lang=lang,
+            skin_context=skin_context,
             analysis_type="vanity"
         )
-        
-        return analysis_result
 
     def analyze_product(self, 
                         image_path: str, 
@@ -291,13 +386,49 @@ class TotalBeautyGuardianEngine:
                         registration_data: Dict[str, Any] = {}, 
                         weather_context: str = None, 
                         lifestyle_24h: str = "Balanced",
-                        lang: str = "ko-KR") -> Dict[str, Any]:
+                        lang: str = "en") -> Dict[str, Any]:
         """
         Specialized analysis for Food/Cosmetics ingredients based on user context.
         """
-        weather = self.environment.fetch_weather(location)
-        current_climate = weather_context or f"Humidity: {weather.get('humidity', '--')}%, UV: {weather.get('uv_index', '--')}"
+        return self.analyze_cosmetic_harmonization(None, [], {}, location, weather_context, lang, registration_data)
+
+    def analyze_cosmetic_harmonization(self, 
+                                     user_id: str,
+                                     routine_list: List[Dict[str, Any]] = [],
+                                     skin_context: Dict[str, Any] = {},
+                                     location: str = "Seoul, Korea",
+                                     weather: str = "Clear",
+                                     lang: str = "en",
+                                     registration_data: Any = {},
+                                     target_product: Any = None,
+                                     image_path: str = None) -> Dict[str, Any]:
+        """
+        [v11.2.7] Dedicated Cosmetic Harmonization Analysis.
+        Now supports image_path and target_product for full vision analysis.
+        """
+        # Step 1: Prepare Context
+        current_weather = self.environment.fetch_weather(location)
+        climate_summary = f"{current_weather.get('weather_desc', 'Unknown')} (Humidity: {current_weather.get('humidity', '--')}%)"
+
+        context = {
+            "user_id": user_id,
+            "target_product": target_product,
+            "location": location,
+            "weather": weather or climate_summary,
+            "routine": routine_list,
+            "skin_context": skin_context,
+            "user_profile": registration_data,
+            "lang": lang
+        }
         
+        # Step 2: Call Vision Engine
+        analysis_result = self.vision.analyze_image(
+            image_path=image_path, 
+            context=context,
+            analysis_type="cosmetic"
+        )
+        
+        return analysis_result
         # Call Vision Engine for Product Analysis
         analysis_result = self.vision.analyze_product(
             image_path=image_path,
@@ -317,10 +448,11 @@ class TotalBeautyGuardianEngine:
         """전문가용 리포트: AI 생성 우선, 없을 시 글자 수 보장 폴백 (summary 200+, skincare 150+, makeup 150+, hair 100+)"""
         s_info = weather.get("season_info", {"season": "Unknown", "risk": "General", "advice": "Balanced Care"})
         
-        # 🌍 [v1.5.0] 위치 정보 필터링 (좌표 감지 시 '내 지역' 또는 도시명으로 치환)
-        loc = weather.get('location', '고객님의 지역')
+        # 🌍 [v1.5.2] 위치 정보 정규화 (하드코딩 제거: 실제 위치 정보 우선)
+        loc = weather.get('location') or '현재 계신 지역'
         if ',' in str(loc) and any(c.isdigit() for c in str(loc)):
-            loc = "Chiang Rai" if "Chiang Rai" in str(loc) else "현재 계신 지역"
+             # 좌표 데이터인 경우 가독성을 위해 '내 위치'로 표시하되, AI에게는 전체 데이터를 전달함
+             loc = "현재 계신 지역"
         
         hum   = weather.get('humidity', '--')
         season = s_info['season']
@@ -368,15 +500,18 @@ class TotalBeautyGuardianEngine:
             hair=hair
         )
 
-    def _calculate_skin_scores(self, bio: ProfessionalBiometrics, face: FaceGeometry, color: PersonalColor, weather: Dict[str, Any]) -> SkinScores:
-        """Calculates 5 specialized skin scores (0-100) based on v3.1.7-PRO logic."""
+    def _calculate_skin_scores(self, bio: ProfessionalBiometrics, face: FaceGeometry, color: PersonalColor, weather: Dict[str, Any], history: List[Dict[str, Any]] = []) -> SkinScores:
+        """Calculates 5 specialized skin scores (0-100) based on v3.1.8-PRO stabilized logic."""
         
         # 1. Total Health Score
+        # [FIX] Scaled to 0-100 range consistently.
         # Weighted sum: Elasticity(30%), Tone Stability(40%), Texture/Wrinkle(30%)
-        e_comp = bio.elasticity_score * 100
-        t_comp = min(100, max(0, (bio.ita / 55.0) * 100))
-        w_comp = (1.0 - bio.wrinkle_score) * 100
+        e_comp = bio.elasticity_score # Already 0-100 from Gemini or fallback
+        t_comp = min(100, max(0, (bio.ita / 55.0) * 100)) # Radiance mapping
+        w_comp = 100 - bio.wrinkle_score # 0 wrinkle = 100 points
+        
         total_health = int(e_comp * 0.3 + t_comp * 0.4 + w_comp * 0.3)
+        total_health = max(0, min(100, total_health))
         
         # 2. Radiance Score
         # Normalized ITA value (Ideal Radiance >= 55)
@@ -396,9 +531,17 @@ class TotalBeautyGuardianEngine:
         vitality = int(max(0, min(100, 50 + (35 - bio.skin_age) * 2)))
         
         # 5. Barrier Resilience Score
-        # 100 - (Erythema Index * 1.2 Penalty)
-        resilience = int(max(0, 100 - (bio.erythema_index * 1.2)))
+        # 100 - (Erythema Index * 1.0 Penalty) [FIXED scale]
+        resilience = int(max(0, 100 - (bio.erythema_index * 1.0)))
         
+        # [STABILIZATION] Intelligent Smoothing (Moving Average)
+        if history:
+            total_health = self._apply_score_smoothing(total_health, [h.get("total_health") for h in history if h.get("total_health") is not None])
+            radiance = self._apply_score_smoothing(radiance, [h.get("radiance") for h in history if h.get("radiance") is not None])
+            vitality = self._apply_score_smoothing(vitality, [h.get("vitality") for h in history if h.get("vitality") is not None])
+            resilience = self._apply_score_smoothing(resilience, [h.get("resilience") for h in history if h.get("resilience") is not None])
+            climate_adaptability = self._apply_score_smoothing(climate_adaptability, [h.get("climate_adaptability") for h in history if h.get("climate_adaptability") is not None])
+
         return SkinScores(
             total_health=total_health,
             radiance=radiance,
@@ -406,6 +549,25 @@ class TotalBeautyGuardianEngine:
             vitality=vitality,
             resilience=resilience
         )
+
+    def _apply_score_smoothing(self, current: int, historical: List[int], threshold: int = 8) -> int:
+        """
+        Applies intelligence smoothing to scores to prevent micro-fluctuations.
+        - If change is within threshold, apply weighted average for stability.
+        - If change is significant, trust the current measurement.
+        """
+        if not historical or len(historical) == 0:
+            return current
+        
+        avg_hist = sum(historical) / len(historical)
+        diff = current - avg_hist
+        
+        if abs(diff) < threshold:
+            # Within noise threshold: Apply 30% of change for smoothness
+            return int(avg_hist + diff * 0.3)
+        else:
+            # Significant change: Reflect 70% of change (responsive but still dampened slightly)
+            return int(avg_hist + diff * 0.7)
 
     def _generate_integrated_curation(self, skin_type, face, color, weather) -> IntegratedCuration:
         location_name = weather.get('location', '현 위치')

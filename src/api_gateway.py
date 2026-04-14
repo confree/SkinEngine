@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 import os
 import sys
 import uuid
@@ -7,6 +8,9 @@ import json
 import datetime
 import io
 import dataclasses
+
+# [v10.6.8] Load environment variables early
+load_dotenv()
 
 # [v10.6.7] Force UTF-8 for Windows Console to prevent Encoding Errors with Emojis
 if sys.platform == "win32":
@@ -75,7 +79,8 @@ def get_mapped_mode(analysis_type):
     mapping = {
         'face': 'face', 'general': 'face',
         'skin': 'skin', 'vanity': 'skin',
-        'routine': 'routine', 'routine_consultation': 'routine'
+        'routine': 'routine', 'routine_consultation': 'routine',
+        'cosmetic': 'cosmetic'
     }
     return mapping.get(analysis_type, 'face')
 
@@ -91,6 +96,19 @@ def save_engine_log(mode, filename, data):
 
 import traceback
 
+# [v12.1.0] Ultra-Safe JSON Parser to prevent 500 errors before analysis
+def safe_json_loads(val, default_val={}):
+    if not val:
+        return default_val
+    if isinstance(val, (dict, list)):
+        return val
+    try:
+        if isinstance(val, str) and (val.startswith('{') or val.startswith('[')):
+            return json.loads(val)
+        return default_val
+    except:
+        return default_val
+
 @app.route('/analyze', methods=['POST', 'OPTIONS'])
 def analyze():
     # CORS 사전 검사(OPTIONS) 대응
@@ -98,60 +116,69 @@ def analyze():
         return jsonify({"status": "ok"}), 200
 
     try:
-        # [NEW LOG] 요청 인지 즉시 출력
-        analysis_type = request.form.get('analysis_type', 'general')
-        print(f"\n[NEW REQUEST] Analysis Mode: {analysis_type.upper()}")
+        # [STEP 1] Data Ingress - Essential Data Extraction
+        if request.is_json or request.mimetype == 'application/json':
+            data = request.get_json(force=True, silent=True) or {}
+        else:
+            data = request.form
         
+        print(f"[STEP 1] Raw data extraction completed. (Mode: {data.get('mode') or data.get('analysis_type')})")
         
-        # [MOD] routine_consultation은 이미지가 필수가 아님
-        if 'image' not in request.files and analysis_type not in ['routine_consultation', 'routine']:
-            return jsonify({"error": f"No image uploaded for {analysis_type} analysis"}), 400
+        # [v12.0.1] Input Harmonization (analysis_type vs mode)
+        # [DEBUG] Changed default to DEBUG_GENERAL to verify deployment
+        analysis_type = data.get('mode') or data.get('analysis_type') or 'DEBUG_GENERAL'
+        print(f"\n" + "!" * 40)
+        print(f"[NEW REQUEST] Analysis Mode Detected: {analysis_type.upper()}")
+        print(f"!" * 40 + "\n")
+        
+        # [MOD] routine 및 cosmetic 분석은 이미지가 필수가 아님
+        if 'image' not in request.files and analysis_type not in ['routine_consultation', 'routine', 'cosmetic']:
+            if not (request.is_json and data.get('image_url')):
+                 print("[DEBUG] Image missing for non-exempt mode.")
+                 return jsonify({"error": f"No image uploaded for {analysis_type} analysis"}), 400
             
         file = request.files.get('image')
-        location = request.form.get('location', 'Seoul, Korea')
-        weather = request.form.get('weather', 'Clear (Standard)')
-        routine = request.form.get('routine', '[]')
-        product_type = request.form.get('product_type', 'face') # NEW: face | food | cosmetic
-        analysis_type = request.form.get('analysis_type', 'general') # [NEW] vanity | general
+        user_id = data.get('user_id', 'Unknown')
+        location = data.get('location', 'Seoul, Korea')
+        weather = data.get('weather', 'Clear (Standard)')
         
-        # [NEW] Multi-modal Data Parsing
-        reg_data = request.form.get('registration_data', '{}')
-        lifestyle = request.form.get('lifestyle', 'Balanced')
-        camera = request.form.get('camera', '{}')
-        lang = request.form.get('lang', 'ko-KR')
+        # [v12.1.0] Apply Safe Parsers
+        routine = safe_json_loads(data.get('routine'), [])
+        product_type = data.get('product_type', 'face')
+        reg_data = safe_json_loads(data.get('registration_data') or data.get('registration'))
+        lifestyle = data.get('lifestyle', 'Balanced')
+        camera = safe_json_loads(data.get('camera'))
+        lang = data.get('lang') or request.accept_languages.best or 'en'
         
-        # [v10.7.2] Intelligence Metadata Parsing (Priority Context)
-        metadata_raw = request.form.get('metadata_json', '{}')
-        metadata = json.loads(metadata_raw)
+        skin_context = safe_json_loads(data.get('skin_context') or data.get('previous_analysis'))
+        metadata = safe_json_loads(data.get('metadata_json'))
         
-        # Initialize skin_context (for routine consultation)
-        skin_context_raw = request.form.get('skin_context', '{}')
-        skin_context = json.loads(skin_context_raw)
+        print(f"[STEP 2] Synthesis: Data normalization done. (User: {user_id})")
+        
+        print(f"[STEP 2] Synthesis: Data normalization done. (User: {user_id}, Mode: {analysis_type})")
 
         # Override individual fields with rich metadata if available
         if metadata.get("registration_data"):
-             reg_data = json.dumps(metadata["registration_data"])
+             reg_data = metadata["registration_data"]
         if metadata.get("routine"):
-             routine = json.dumps(metadata["routine"])
+             routine = metadata["routine"]
         if metadata.get("camera"):
-             camera = json.dumps(metadata["camera"])
+             camera = metadata["camera"]
         if metadata.get("weather"):
              weather = metadata["weather"]
-        if metadata.get("skin_context"):
+        if metadata.get("skin_context") or metadata.get("previous_analysis"):
              # [NEW] Prioritize historical/baseline scores from client metadata
-             skin_context = metadata["skin_context"]
+             skin_context = metadata.get("skin_context") or metadata.get("previous_analysis")
         
         # ────────────────────────────────────────────────
-        # 📥 [CLIENT REQUEST LOG] 클라이언트 수신 데이터 확인
+        # 🧪 [GATEWAY-TRACE] Final Context Check
         # ────────────────────────────────────────────────
-        print("\n" + "=" * 64)
-        print(f"[CLIENT REQUEST] {product_type.upper()} ({analysis_type}) Analysis received")
-        print("=" * 64)
-        print(f"Image     : {file.filename if file else 'N/A'}")
-        print(f"Intelligence Source: {'Enriched Metadata' if metadata_raw != '{}' else 'Individual Fields'}")
-        print(f"Registration: {reg_data}")
-        print(f"Intelligence Metadata: {metadata_raw[:200]}...") # Log partial for safety
-        print("=" * 64 + "\n")
+        print(f"\n>>>> [TRACE-IN] User: {user_id} | Mode: {analysis_type}")
+        print(f"     - Image File: {file.filename if file else 'NONE'}")
+        print(f"     - Reg Data Keys: {list(reg_data.keys()) if isinstance(reg_data, dict) else 'NOT_A_DICT'}")
+        print(f"     - Routine Sample: {str(routine)[:50]}...")
+        print(f"     - Metadata Logic: {'Enriched' if metadata else 'Standard'}")
+        print("<<<< [TRACE-END]\n")
         
         filename = f"{uuid.uuid4()}.jpg"
         filepath = os.path.join(UPLOAD_FOLDER, filename)
@@ -169,10 +196,10 @@ def analyze():
         if product_type in ['food', 'cosmetic']:
             # ... (기존 product logic)
             analysis_result = guardian.analyze_product(
-                image_path=filepath if 'file' in locals() else None, # filepath exists if file was saved
+                image_path=filepath if 'file' in locals() else None, 
                 product_type=product_type,
                 location=location,
-                registration_data=json.loads(reg_data),
+                registration_data=reg_data,
                 weather_context=weather,
                 lifestyle_24h=lifestyle,
                 lang=lang
@@ -187,10 +214,11 @@ def analyze():
             "location": location,
             "weather": weather,
             "lang": lang,
-            "registration_data": json.loads(reg_data),
+            "registration_data": reg_data,
             "lifestyle": lifestyle,
-            "routine": json.loads(routine)
+            "routine": routine
         }
+        print(f"[STEP 3] Engine Ingress: Preparing payload for {analysis_type}...")
         mapped_mode = get_mapped_mode(analysis_type)
         save_engine_log(mapped_mode, req_filename, engine_req_data)
         print(f"[Server] Request log saved to logs/{mapped_mode}/{req_filename}")
@@ -203,42 +231,76 @@ def analyze():
             report_json = guardian.analyze_vanity(
                 image_path=filepath,
                 location=location,
-                registration_data=json.loads(reg_data),
+                registration_data=reg_data,
                 weather_context=weather,
                 lifestyle_24h=lifestyle,
-                camera_metadata=json.loads(camera),
-                current_routine=json.loads(routine),
-                lang=lang
+                camera_metadata=camera,
+                current_routine=routine,
+                lang=lang,
+                skin_context=skin_context # [v13.0.0] Restored historical context for comparative analysis
             )
         elif analysis_type == 'routine' or analysis_type == 'routine_consultation':
             # [NEW] Routine Consultation Logic
             print(f"[Server] Starting Routine consultation Analysis...")
             report_json = guardian.analyze_routine_consultation(
-                routine=json.loads(routine),
+                routine=routine,
                 skin_context=skin_context,
                 location=location,
-                registration_data=json.loads(reg_data),
+                registration_data=reg_data,
                 weather_context=weather,
-                camera_metadata=json.loads(camera),
+                camera_metadata=camera,
                 lang=lang
             )
+        elif analysis_type == 'cosmetic':
+            # [v11.2.5] Dedicated Cosmetic Harmonization Branch
+            print(f"[Server] Starting Cosmetic Harmonization Analysis...")
+            print(f"[DEBUG] Routine Size: {len(str(routine))}, Context Size: {len(str(skin_context))}")
+            
+            # [v12.9.16] 🛡️ Strict Null-String Filtering
+            def _clean(val):
+                if val is None or str(val).lower() == 'null' or not str(val).strip():
+                    return None
+                return str(val).strip()
+
+            p_name = _clean(data.get('product_name'))
+            p_type = _clean(data.get('product_type'))
+            target_prod = p_name or p_type or "Current Selection"
+            
+            print(f"🧬 [Target-Logic] Captured Product: '{target_prod}' (Source: {'Name' if p_name else 'Type' if p_type else 'Fallback'})")
+            
+            report_json = guardian.analyze_cosmetic_harmonization(
+                user_id=user_id,
+                routine_list=routine,
+                skin_context=skin_context,
+                location=location,
+                weather=weather,
+                lang=lang,
+                registration_data=reg_data,
+                target_product=target_prod,
+                image_path=filepath
+            )
+        
         elif analysis_type == 'face' or analysis_type == 'general':
             # Full Skin/Face Analysis Mode
             print(f"[Server] Starting Face Analysis (v3.1.7-FACE-PRO)...")
+            
+            # [v12.1.8] Direct object passing with full context (including skin_context)
             report_json = guardian.analyze_image(
                 image_path=filepath,
                 location=location,
-                registration_data=json.loads(reg_data),
+                registration_data=reg_data,
                 weather_context=weather,
                 lifestyle_24h=lifestyle,
-                camera_metadata=json.loads(camera),
-                current_routine=json.loads(routine),
+                camera_metadata=camera,
+                current_routine=routine,
                 lang=lang,
+                skin_context=skin_context,
+                analysis_type="vanity"
             )
         else:
              # Default fallback
              print(f"[Server] Unknown analysis type '{analysis_type}'. Falling back to Face Mode.")
-             report_json = guardian.analyze_image(image_path=filepath, lang=lang)
+             report_json = guardian.analyze_image(image_path=filepath, location=location, lang=lang)
 
         # [Harness] Immediate destruction after analysis (Rule 1)
         if filepath and os.path.exists(filepath):
@@ -343,6 +405,14 @@ def analyze():
         except Exception as res_log_e:
             print(f"[Server] Failed to save response log: {res_log_e}")
             
+        # [v11.0.1] Print full JSON response as requested by USER
+        print("\n" + "--- [FINAL RESPONSE JSON] ---")
+        try:
+             print(json.dumps(final_safe_data, indent=4, ensure_ascii=False))
+        except:
+             print("[Server] Result too large to print fully or encoding conflict.")
+        print("--- [END OF RESPONSE] ---\n")
+
         return jsonify(final_safe_data)
         
     except Exception as e:
@@ -351,14 +421,17 @@ def analyze():
         import traceback
         tb = traceback.format_exc()
         try:
-            print(tb)
+            # Force ASCII to ensure output in Windows terminal
+            print(tb.encode('ascii', 'ignore').decode('ascii'))
         except:
-            print("Could not print traceback due to encoding error")
+            print(f"Server Exception: {e}")
         
-        # Save traceback to a file for investigation
+        # Save traceback to a local file for investigation [TEMPORARY DEBUG]
         try:
-            with open("C:/Users/jaesu/.gemini/antigravity/brain/39f5faaa-0d06-4be8-ac3a-223983c0cb0e/scratch/error_traceback.txt", "w", encoding="utf-8") as f:
+            with open("debug_error.log", "a", encoding="utf-8") as f:
+                f.write(f"\n[{datetime.datetime.now()}] Error: {str(e)}\n")
                 f.write(tb)
+                f.write("\n" + "="*50 + "\n")
         except:
             pass
             

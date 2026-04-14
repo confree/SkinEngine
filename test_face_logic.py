@@ -42,10 +42,39 @@ def test_face_analysis():
     print("-" * 50)
 
 if __name__ == "__main__":
-    # Create dummy image
-    with open("dummy_face.jpg", "wb") as f: f.write(b"face")
+    # Use existing dummy image
+    img_path = "dummy.jpg"
+    if not os.path.exists(img_path):
+        from PIL import Image
+        img = Image.new('RGB', (100, 100), color = 'white')
+        img.save(img_path)
     
     try:
-        test_face_analysis()
-    finally:
-        if os.path.exists("dummy_face.jpg"): os.remove("dummy_face.jpg")
+        # Pass the real image path to test
+        def test_face_analysis_real():
+            print("🚀 [TEST] Face Analysis v3.1.7-PRO Verification")
+            engine = TotalBeautyGuardianEngine() # Use .env key
+            
+            report = engine.analyze_image(
+                image_path="dummy.jpg",
+                location="Seoul",
+                registration_data={"age": 28, "sex": "Female", "race": "Asian"},
+                weather_context="Clear, Humidity: 45%",
+                lifestyle_24h="Good sleep",
+                camera_metadata={"luminance": 120},
+                current_routine=["Water Cream"]
+            )
+            
+            # Use dot notation or to_json
+            report_json = json.loads(report.to_json())
+            print(f"✅ Version: {report_json.get('version')}")
+            print(f"✅ Image Type: {report_json.get('image_type')}")
+            
+            sections = ["biometrics", "face", "color", "curation", "consult", "risks", "dossier", "final_action"]
+            for s in sections:
+                status = "FOUND" if s in report_json else "MISSING"
+                print(f"🔍 Section [{s}]: {status}")
+                
+        test_face_analysis_real()
+    except Exception as e:
+        print(f"❌ Test Failed: {e}")

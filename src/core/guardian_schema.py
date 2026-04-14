@@ -91,6 +91,7 @@ class TotalBeautyGuardianReport:
     scores: Optional[SkinScores] = None
     reliability_message: Optional[str] = None
     image_type: str = "face"
+    comparison: Optional[Dict[str, Any]] = None
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=4, ensure_ascii=False)

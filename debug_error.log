@@ -1,0 +1,667 @@
+
+[2026-04-13 00:26:57.367058] Error: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 228, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 55, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 237, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 213, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}
+
+==================================================
+
+[2026-04-13 00:28:44.238892] Error: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 228, in analyze
+    )
+      
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 55, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 237, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 213, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}
+
+==================================================
+
+[2026-04-13 09:14:34.783010] Error: TotalBeautyGuardianEngine.analyze_image() missing 1 required positional argument: 'location'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 253, in analyze
+    report_json = guardian.analyze_image(image_path=filepath, lang=lang)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TotalBeautyGuardianEngine.analyze_image() missing 1 required positional argument: 'location'
+
+==================================================
+
+[2026-04-13 11:58:23.745609] Error: name 'metadata_raw' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 179, in analyze
+    print(f"Intelligence Source: {'Enriched Metadata' if metadata_raw != '{}' else 'Individual Fields'}")
+                                                         ^^^^^^^^^^^^
+NameError: name 'metadata_raw' is not defined
+
+==================================================
+
+[2026-04-13 12:25:23.628200] Error: the JSON object must be str, bytes or bytearray, not dict
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 279, in analyze
+    camera_metadata=json.loads(camera),
+                    ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not dict
+
+==================================================
+
+[2026-04-13 12:26:40.958199] Error: the JSON object must be str, bytes or bytearray, not dict
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 279, in analyze
+    camera_metadata=json.loads(camera),
+                    ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not dict
+
+==================================================
+
+[2026-04-13 12:29:47.770619] Error: the JSON object must be str, bytes or bytearray, not dict
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 279, in analyze
+    camera_metadata=json.loads(camera),
+                    ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not dict
+
+==================================================
+
+[2026-04-13 12:49:46.035360] Error: 'str' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 145, in analyze_image
+    reg_age = registration_data.get('age')
+              ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+==================================================
+
+[2026-04-13 15:03:38.851882] Error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 246, in analyze
+    report_json = guardian.analyze_routine_consultation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 284, in analyze_routine_consultation
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 249, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 225, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 186, in raise_error
+    raise ServerError(status_code, response_json, response)
+google.genai.errors.ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+
+==================================================
+
+[2026-04-13 18:45:15.667096] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 156, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 18:46:08.396343] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 156, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 18:46:48.970161] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 156, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 18:49:39.258961] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 166, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 18:54:15.311240] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 173, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 18:58:54.755527] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 174, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 19:01:15.906851] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 275, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 156, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 19:04:39.154229] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 156, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 19:08:24.522642] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 157, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 19:10:49.389172] Error: AI failed to determine 'skin_age'. (Analysis Incomplete)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 157, in analyze_image
+    raise ValueError("AI failed to determine 'skin_age'. (Analysis Incomplete)")
+ValueError: AI failed to determine 'skin_age'. (Analysis Incomplete)
+
+==================================================
+
+[2026-04-13 19:14:40.101656] Error: Missing critical biometrics: elasticity=None, wrinkle=None
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 174, in analyze_image
+    raise ValueError(f"Missing critical biometrics: elasticity={elasticity}, wrinkle={wrinkle}")
+ValueError: Missing critical biometrics: elasticity=None, wrinkle=None
+
+==================================================
+
+[2026-04-13 19:16:52.195492] Error: name 'json' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 167, in analyze_image
+    error_msg = f"AI failed to determine 'skin_age'. RAW_DATA: {json.dumps(raw_analysis)}"
+                                                                ^^^^
+NameError: name 'json' is not defined
+
+==================================================
+
+[2026-04-13 19:19:05.390563] Error: AI failed to determine 'skin_age'. RAW_DATA: {"analysis_id": "2a1b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p", "compatibility_score": 60, "version": "1.2.1-VANITY-PRO", "scores": {"total_health": 65, "radiance": 55, "vitality": 60, "resilience": 50, "climate_adaptability": 40}, "consult": {"summary": "\ud604\uc7ac \ud53c\ubd80\ub294 \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uace0\uc628 \uac74\uc870\ud55c \uae30\ud6c4(\uc2b5\ub3c4 5.9%)\uc5d0 \ub178\ucd9c\ub418\uc5b4 \uc804\ubc18\uc801\uc778 \uc218\ubd84 \uc720\uc9c0 \ubc0f \ud53c\ubd80 \uc7a5\ubcbd \uae30\ub2a5\uc5d0 \uc5b4\ub824\uc6c0\uc744 \uacaa\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc721\uc548\uc0c1 \uc2ec\uac01\ud55c \ubb38\uc81c\ub294 \uc5c6\uc73c\ub098, \uac74\uc870\ud568\uc73c\ub85c \uc778\ud55c \ubbf8\uc138\ud55c \ud65c\ub825 \uc800\ud558\uc640 \ud0c4\ub825 \uac10\uc18c\uac00 \uad00\ucc30\ub429\ub2c8\ub2e4. \ub8e8\ud2f4 \uc815\ubcf4\uac00 \uc5c6\uc5b4 \uc815\ud655\ud55c \ud6a8\ub2a5 \ubd84\uc11d\uc740 \uc5b4\ub835\uc9c0\ub9cc, \ud604\uc7ac \ud658\uacbd\uc5d0 \ucd5c\uc801\ud654\ub41c \ubcf4\uc2b5 \ubc0f \uc7a5\ubcbd \uac15\ud654 \uad00\ub9ac\uac00 \uc2dc\uae09\ud574 \ubcf4\uc785\ub2c8\ub2e4.", "skincare": "\ud604\uc7ac \ub8e8\ud2f4 \uc815\ubcf4\uac00 \ubd80\uc7ac\ud558\uc5ec \uad6c\uccb4\uc801\uc778 \uc81c\ud488 \ucd94\ucc9c\uc740 \uc5b4\ub835\uc2b5\ub2c8\ub2e4. \uadf8\ub7ec\ub098 \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uadf9\ub3c4\ub85c \ub0ae\uc740 \uc2b5\ub3c4\ub97c \uace0\ub824\ud560 \ub54c, \ud53c\ubd80 \uc7a5\ubcbd\uc744 \uac15\ud654\ud558\uace0 \uc218\ubd84 \uc190\uc2e4\uc744 \ucd5c\uc18c\ud654\ud558\ub294 \uc2a4\ud0a8\ucf00\uc5b4\uc5d0 \uc9d1\uc911\ud574\uc57c \ud569\ub2c8\ub2e4. \ud788\uc54c\ub8e8\ub860\uc0b0, \uc138\ub77c\ub9c8\uc774\ub4dc, \uae00\ub9ac\uc138\ub9b0 \ub4f1 \ubcf4\uc2b5 \uc131\ubd84\uc774 \ud48d\ubd80\ud55c \uc81c\ud488\uc744 \uc0ac\uc6a9\ud558\uace0, \uc624\uc77c \ubca0\uc774\uc2a4\uc758 \ubcf4\uc2b5\uc81c\ub97c \ucd94\uac00\ud558\uc5ec \uc218\ubd84 \uc99d\ubc1c\uc744 \ub9c9\ub294 \uac83\uc774 \uc911\uc694\ud569\ub2c8\ub2e4. \ub0ae\uc5d0\ub294 \uc790\uc678\uc120 \ucc28\ub2e8\uc81c\ub97c \uaf3c\uaf3c\ud788 \ubc14\ub974\uace0, \ubc24\uc5d0\ub294 \uc7ac\uc0dd \ubc0f \ubcf4\uc2b5\uc5d0 \uc9d1\uc911\ud558\ub294 \ub8e8\ud2f4\uc744 \uad8c\uc7a5\ud569\ub2c8\ub2e4.", "visual_progress": "\uc774\uc804 \ucd2c\uc601 \ub370\uc774\ud130(skin_context)\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc544 \ud604\uc7ac \uc774\ubbf8\uc9c0\uc640\uc758 \uc870\uba85 \uc0c1\ud0dc \ub300\uc870 \ubc0f \uc21c\uc218\ud55c \ud53c\ubd80 \ubcc0\ud654\uac12 \uc0b0\ucd9c\uc774 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. \ub530\ub77c\uc11c \uc2dc\uac01\uc801 \uc9c4\ud589 \uc0c1\ud669\uc5d0 \ub300\ud55c \ubd84\uc11d\uc740 \uc81c\uacf5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c \ubd84\uc11d \uc2dc \uc774\uc804 \ub370\uc774\ud130\ub97c \ud568\uaed8 \uc81c\uacf5\ud574 \uc8fc\uc2dc\uba74 \ub354\uc6b1 \uc815\ubc00\ud55c \ucd94\uc801\uc774 \uac00\ub2a5\ud569\ub2c8\ub2e4.", "lifestyle_causality": "\uc774\ubbf8\uc9c0\uc5d0\uc11c \uc0ac\uc6a9\uc790\uac00 \uc2a4\ub0b5\uc744 \uc12d\ucde8\ud558\ub294 \ubaa8\uc2b5\uc774 \uad00\ucc30\ub429\ub2c8\ub2e4. \uac00\uacf5\uc2dd\ud488\uc774\ub098 \uc5fc\ubd84\uc774 \ub192\uc740 \uc2a4\ub0b5\uc740 \uccb4\ub0b4 \uc218\ubd84 \uade0\ud615\uc5d0 \uc601\ud5a5\uc744 \ubbf8\uccd0 \ud53c\ubd80 \uac74\uc870\ub97c \uc545\ud654\uc2dc\ud0ac \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ub610\ud55c, \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uadf9\uc2ec\ud55c \uac74\uc870 \uae30\ud6c4\ub294 \ud53c\ubd80\uc758 \uc218\ubd84 \ubcf4\uc720 \ub2a5\ub825\uc744 \uc9c0\uc18d\uc801\uc73c\ub85c \uc800\ud558\uc2dc\ud0a4\ub294 \uc8fc\uc694 \uc6d0\uc778\uc73c\ub85c \uc791\uc6a9\ud569\ub2c8\ub2e4. \ucda9\ubd84\ud55c \uc218\ubd84 \uc12d\ucde8\uc640 \uade0\ud615 \uc7a1\ud78c \uc2dd\ub2e8\uc774 \ud53c\ubd80 \uac74\uac15 \uc720\uc9c0\uc5d0 \ud544\uc218\uc801\uc785\ub2c8\ub2e4.", "efficacy": [{"target": "\uc218\ubd84 \uc7a5\ubcbd \uac15\ud654", "reason": "\uadf9\ub3c4\ub85c \ub0ae\uc740 \uc2b5\ub3c4(5.9%)\ub85c \uc778\ud574 \ud53c\ubd80 \uc7a5\ubcbd \uae30\ub2a5\uc774 \ucde8\uc57d\ud574\uc9c8 \uc218 \uc788\uc73c\uba70, \uc774\ub294 \uac74\uc870\ud568, \ubbfc\uac10\uc131 \uc99d\uac00\ub85c \uc774\uc5b4\uc9c8 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \ub8e8\ud2f4\uc774 \uc774 \ubd80\ubd84\uc744 \ucda9\ubd84\ud788 \ucee4\ubc84\ud558\uc9c0 \ubabb\ud560 \uac00\ub2a5\uc131\uc774 \ub192\uc2b5\ub2c8\ub2e4."}, {"target": "\ud53c\ubd80 \ud65c\ub825 \ubc0f \ud0c4\ub825 \uc99d\uc9c4", "reason": "\uac74\uc870\ud55c \ud658\uacbd\uc740 \ud53c\ubd80\uc758 \uc2e0\uc9c4\ub300\uc0ac\ub97c \ub454\ud654\uc2dc\ud0a4\uace0 \ud0c4\ub825\uc744 \uc800\ud558\uc2dc\ud0ac \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \ud53c\ubd80\ub294 \ud65c\ub825\uc774 \ub2e4\uc18c \uc800\ud558\ub41c \uc0c1\ud0dc\ub85c \ubcf4\uc774\uba70, \uc774\ub97c \uac1c\uc120\ud560 \uc131\ubd84(\uc608: \ud56d\uc0b0\ud654\uc81c)\uc758 \ubcf4\ucda9\uc774 \ud544\uc694\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."}], "conflicts": []}, "final_action": {"offset_routine": ["\uac15\ub825\ud55c \ubcf4\uc2b5 \uc138\ub7fc/\uc570\ud50c \ucd94\uac00 (\ud788\uc54c\ub8e8\ub860\uc0b0, \ud310\ud14c\ub180 \ud568\uc720)", "\uc138\ub77c\ub9c8\uc774\ub4dc \ub610\ub294 \uc9c0\ubc29\uc0b0\uc774 \ud48d\ubd80\ud55c \ud06c\ub9bc/\ubc24 \ud0c0\uc785 \ubcf4\uc2b5\uc81c \uc0ac\uc6a9", "\uc2e4\ub0b4 \uac00\uc2b5\uae30 \uc0ac\uc6a9 \uace0\ub824 (\uc2b5\ub3c4 40-60% \uc720\uc9c0)", "\ud558\ub8e8 2\ub9ac\ud130 \uc774\uc0c1\uc758 \ucda9\ubd84\ud55c \ubb3c \uc12d\ucde8"], "professional_tip": "\ubbc0\uc559\ud30c\uc57c\uc624\uad70\uacfc \uac19\uc740 \uadf9\uc2ec\ud55c \uac74\uc870 \uae30\ud6c4\uc5d0\uc11c\ub294 \ud53c\ubd80\uac00 \uc678\ubd80 \ud658\uacbd\uc73c\ub85c\ubd80\ud130 \uc2a4\uc2a4\ub85c\ub97c \ubcf4\ud638\ud558\uae30 \uc704\ud574 \ub9ce\uc740 \uc5d0\ub108\uc9c0\ub97c \uc18c\ubaa8\ud569\ub2c8\ub2e4. \ub2e8\uc21c\ud788 \uc218\ubd84\uc744 \uacf5\uae09\ud558\ub294 \uac83\uc744 \ub118\uc5b4, \ud53c\ubd80 \uc7a5\ubcbd\uc744 \uad6c\uc131\ud558\ub294 \uc9c0\uc9c8 \uc131\ubd84(\uc138\ub77c\ub9c8\uc774\ub4dc, \ucf5c\ub808\uc2a4\ud14c\ub864, \uc9c0\ubc29\uc0b0)\uc744 \ubcf4\ucda9\ud558\uc5ec \uc7a5\ubcbd \uae30\ub2a5\uc744 \uac15\ud654\ud558\ub294 \uac83\uc774 \ud575\uc2ec\uc785\ub2c8\ub2e4. \ub610\ud55c, \uc2e4\ub0b4 \uc2b5\ub3c4 \uad00\ub9ac\ub294 \uc2a4\ud0a8\ucf00\uc5b4\ub9cc\ud07c \uc911\uc694\ud569\ub2c8\ub2e4.", "future_prediction": {"expected_milestone": "\ud53c\ubd80 \uc18d\ub2f9\uae40 \uac1c\uc120 \ubc0f \ud45c\uba74 \uc720\uc5f0\uc131 \uc99d\uac00", "estimated_days": 14, "maintenance_priority": "\uc218\ubd84 \uc7a5\ubcbd \uac15\ud654 \ubc0f \uae30\ud6c4 \uc801\uc751\ub825 \uc99d\uc9c4"}, "peer_context": "\uc720\uc0ac\ud55c \uace0\uc628 \uac74\uc870 \uae30\ud6c4\uc5d0 \uac70\uc8fc\ud558\ub294 \uc0ac\uc6a9\uc790\ub4e4\uc740 \ub300\ubd80\ubd84 \ud53c\ubd80 \uac74\uc870, \uac01\uc9c8, \ubbfc\uac10\uc131 \uc99d\uac00\ub97c \ud638\uc18c\ud558\uba70, \ubcf4\uc2b5 \ubc0f \uc7a5\ubcbd \uac15\ud654 \uc81c\ud488\uc5d0 \ub300\ud55c \uc758\uc874\ub3c4\uac00 \ub192\uc2b5\ub2c8\ub2e4. \ud2b9\ud788, \uc2e4\ub0b4\uc678 \uc2b5\ub3c4 \ucc28\uc774\ub85c \uc778\ud55c \ud53c\ubd80 \uc2a4\ud2b8\ub808\uc2a4 \uad00\ub9ac\uac00 \uc911\uc694\ud55c \uacf5\ud1b5 \uacfc\uc81c\uc785\ub2c8\ub2e4."}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 170, in analyze_image
+    raise ValueError(error_msg)
+ValueError: AI failed to determine 'skin_age'. RAW_DATA: {"analysis_id": "2a1b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p", "compatibility_score": 60, "version": "1.2.1-VANITY-PRO", "scores": {"total_health": 65, "radiance": 55, "vitality": 60, "resilience": 50, "climate_adaptability": 40}, "consult": {"summary": "\ud604\uc7ac \ud53c\ubd80\ub294 \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uace0\uc628 \uac74\uc870\ud55c \uae30\ud6c4(\uc2b5\ub3c4 5.9%)\uc5d0 \ub178\ucd9c\ub418\uc5b4 \uc804\ubc18\uc801\uc778 \uc218\ubd84 \uc720\uc9c0 \ubc0f \ud53c\ubd80 \uc7a5\ubcbd \uae30\ub2a5\uc5d0 \uc5b4\ub824\uc6c0\uc744 \uacaa\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc721\uc548\uc0c1 \uc2ec\uac01\ud55c \ubb38\uc81c\ub294 \uc5c6\uc73c\ub098, \uac74\uc870\ud568\uc73c\ub85c \uc778\ud55c \ubbf8\uc138\ud55c \ud65c\ub825 \uc800\ud558\uc640 \ud0c4\ub825 \uac10\uc18c\uac00 \uad00\ucc30\ub429\ub2c8\ub2e4. \ub8e8\ud2f4 \uc815\ubcf4\uac00 \uc5c6\uc5b4 \uc815\ud655\ud55c \ud6a8\ub2a5 \ubd84\uc11d\uc740 \uc5b4\ub835\uc9c0\ub9cc, \ud604\uc7ac \ud658\uacbd\uc5d0 \ucd5c\uc801\ud654\ub41c \ubcf4\uc2b5 \ubc0f \uc7a5\ubcbd \uac15\ud654 \uad00\ub9ac\uac00 \uc2dc\uae09\ud574 \ubcf4\uc785\ub2c8\ub2e4.", "skincare": "\ud604\uc7ac \ub8e8\ud2f4 \uc815\ubcf4\uac00 \ubd80\uc7ac\ud558\uc5ec \uad6c\uccb4\uc801\uc778 \uc81c\ud488 \ucd94\ucc9c\uc740 \uc5b4\ub835\uc2b5\ub2c8\ub2e4. \uadf8\ub7ec\ub098 \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uadf9\ub3c4\ub85c \ub0ae\uc740 \uc2b5\ub3c4\ub97c \uace0\ub824\ud560 \ub54c, \ud53c\ubd80 \uc7a5\ubcbd\uc744 \uac15\ud654\ud558\uace0 \uc218\ubd84 \uc190\uc2e4\uc744 \ucd5c\uc18c\ud654\ud558\ub294 \uc2a4\ud0a8\ucf00\uc5b4\uc5d0 \uc9d1\uc911\ud574\uc57c \ud569\ub2c8\ub2e4. \ud788\uc54c\ub8e8\ub860\uc0b0, \uc138\ub77c\ub9c8\uc774\ub4dc, \uae00\ub9ac\uc138\ub9b0 \ub4f1 \ubcf4\uc2b5 \uc131\ubd84\uc774 \ud48d\ubd80\ud55c \uc81c\ud488\uc744 \uc0ac\uc6a9\ud558\uace0, \uc624\uc77c \ubca0\uc774\uc2a4\uc758 \ubcf4\uc2b5\uc81c\ub97c \ucd94\uac00\ud558\uc5ec \uc218\ubd84 \uc99d\ubc1c\uc744 \ub9c9\ub294 \uac83\uc774 \uc911\uc694\ud569\ub2c8\ub2e4. \ub0ae\uc5d0\ub294 \uc790\uc678\uc120 \ucc28\ub2e8\uc81c\ub97c \uaf3c\uaf3c\ud788 \ubc14\ub974\uace0, \ubc24\uc5d0\ub294 \uc7ac\uc0dd \ubc0f \ubcf4\uc2b5\uc5d0 \uc9d1\uc911\ud558\ub294 \ub8e8\ud2f4\uc744 \uad8c\uc7a5\ud569\ub2c8\ub2e4.", "visual_progress": "\uc774\uc804 \ucd2c\uc601 \ub370\uc774\ud130(skin_context)\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc544 \ud604\uc7ac \uc774\ubbf8\uc9c0\uc640\uc758 \uc870\uba85 \uc0c1\ud0dc \ub300\uc870 \ubc0f \uc21c\uc218\ud55c \ud53c\ubd80 \ubcc0\ud654\uac12 \uc0b0\ucd9c\uc774 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. \ub530\ub77c\uc11c \uc2dc\uac01\uc801 \uc9c4\ud589 \uc0c1\ud669\uc5d0 \ub300\ud55c \ubd84\uc11d\uc740 \uc81c\uacf5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c \ubd84\uc11d \uc2dc \uc774\uc804 \ub370\uc774\ud130\ub97c \ud568\uaed8 \uc81c\uacf5\ud574 \uc8fc\uc2dc\uba74 \ub354\uc6b1 \uc815\ubc00\ud55c \ucd94\uc801\uc774 \uac00\ub2a5\ud569\ub2c8\ub2e4.", "lifestyle_causality": "\uc774\ubbf8\uc9c0\uc5d0\uc11c \uc0ac\uc6a9\uc790\uac00 \uc2a4\ub0b5\uc744 \uc12d\ucde8\ud558\ub294 \ubaa8\uc2b5\uc774 \uad00\ucc30\ub429\ub2c8\ub2e4. \uac00\uacf5\uc2dd\ud488\uc774\ub098 \uc5fc\ubd84\uc774 \ub192\uc740 \uc2a4\ub0b5\uc740 \uccb4\ub0b4 \uc218\ubd84 \uade0\ud615\uc5d0 \uc601\ud5a5\uc744 \ubbf8\uccd0 \ud53c\ubd80 \uac74\uc870\ub97c \uc545\ud654\uc2dc\ud0ac \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ub610\ud55c, \ubbc0\uc559\ud30c\uc57c\uc624\uad70\uc758 \uadf9\uc2ec\ud55c \uac74\uc870 \uae30\ud6c4\ub294 \ud53c\ubd80\uc758 \uc218\ubd84 \ubcf4\uc720 \ub2a5\ub825\uc744 \uc9c0\uc18d\uc801\uc73c\ub85c \uc800\ud558\uc2dc\ud0a4\ub294 \uc8fc\uc694 \uc6d0\uc778\uc73c\ub85c \uc791\uc6a9\ud569\ub2c8\ub2e4. \ucda9\ubd84\ud55c \uc218\ubd84 \uc12d\ucde8\uc640 \uade0\ud615 \uc7a1\ud78c \uc2dd\ub2e8\uc774 \ud53c\ubd80 \uac74\uac15 \uc720\uc9c0\uc5d0 \ud544\uc218\uc801\uc785\ub2c8\ub2e4.", "efficacy": [{"target": "\uc218\ubd84 \uc7a5\ubcbd \uac15\ud654", "reason": "\uadf9\ub3c4\ub85c \ub0ae\uc740 \uc2b5\ub3c4(5.9%)\ub85c \uc778\ud574 \ud53c\ubd80 \uc7a5\ubcbd \uae30\ub2a5\uc774 \ucde8\uc57d\ud574\uc9c8 \uc218 \uc788\uc73c\uba70, \uc774\ub294 \uac74\uc870\ud568, \ubbfc\uac10\uc131 \uc99d\uac00\ub85c \uc774\uc5b4\uc9c8 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \ub8e8\ud2f4\uc774 \uc774 \ubd80\ubd84\uc744 \ucda9\ubd84\ud788 \ucee4\ubc84\ud558\uc9c0 \ubabb\ud560 \uac00\ub2a5\uc131\uc774 \ub192\uc2b5\ub2c8\ub2e4."}, {"target": "\ud53c\ubd80 \ud65c\ub825 \ubc0f \ud0c4\ub825 \uc99d\uc9c4", "reason": "\uac74\uc870\ud55c \ud658\uacbd\uc740 \ud53c\ubd80\uc758 \uc2e0\uc9c4\ub300\uc0ac\ub97c \ub454\ud654\uc2dc\ud0a4\uace0 \ud0c4\ub825\uc744 \uc800\ud558\uc2dc\ud0ac \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \ud53c\ubd80\ub294 \ud65c\ub825\uc774 \ub2e4\uc18c \uc800\ud558\ub41c \uc0c1\ud0dc\ub85c \ubcf4\uc774\uba70, \uc774\ub97c \uac1c\uc120\ud560 \uc131\ubd84(\uc608: \ud56d\uc0b0\ud654\uc81c)\uc758 \ubcf4\ucda9\uc774 \ud544\uc694\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."}], "conflicts": []}, "final_action": {"offset_routine": ["\uac15\ub825\ud55c \ubcf4\uc2b5 \uc138\ub7fc/\uc570\ud50c \ucd94\uac00 (\ud788\uc54c\ub8e8\ub860\uc0b0, \ud310\ud14c\ub180 \ud568\uc720)", "\uc138\ub77c\ub9c8\uc774\ub4dc \ub610\ub294 \uc9c0\ubc29\uc0b0\uc774 \ud48d\ubd80\ud55c \ud06c\ub9bc/\ubc24 \ud0c0\uc785 \ubcf4\uc2b5\uc81c \uc0ac\uc6a9", "\uc2e4\ub0b4 \uac00\uc2b5\uae30 \uc0ac\uc6a9 \uace0\ub824 (\uc2b5\ub3c4 40-60% \uc720\uc9c0)", "\ud558\ub8e8 2\ub9ac\ud130 \uc774\uc0c1\uc758 \ucda9\ubd84\ud55c \ubb3c \uc12d\ucde8"], "professional_tip": "\ubbc0\uc559\ud30c\uc57c\uc624\uad70\uacfc \uac19\uc740 \uadf9\uc2ec\ud55c \uac74\uc870 \uae30\ud6c4\uc5d0\uc11c\ub294 \ud53c\ubd80\uac00 \uc678\ubd80 \ud658\uacbd\uc73c\ub85c\ubd80\ud130 \uc2a4\uc2a4\ub85c\ub97c \ubcf4\ud638\ud558\uae30 \uc704\ud574 \ub9ce\uc740 \uc5d0\ub108\uc9c0\ub97c \uc18c\ubaa8\ud569\ub2c8\ub2e4. \ub2e8\uc21c\ud788 \uc218\ubd84\uc744 \uacf5\uae09\ud558\ub294 \uac83\uc744 \ub118\uc5b4, \ud53c\ubd80 \uc7a5\ubcbd\uc744 \uad6c\uc131\ud558\ub294 \uc9c0\uc9c8 \uc131\ubd84(\uc138\ub77c\ub9c8\uc774\ub4dc, \ucf5c\ub808\uc2a4\ud14c\ub864, \uc9c0\ubc29\uc0b0)\uc744 \ubcf4\ucda9\ud558\uc5ec \uc7a5\ubcbd \uae30\ub2a5\uc744 \uac15\ud654\ud558\ub294 \uac83\uc774 \ud575\uc2ec\uc785\ub2c8\ub2e4. \ub610\ud55c, \uc2e4\ub0b4 \uc2b5\ub3c4 \uad00\ub9ac\ub294 \uc2a4\ud0a8\ucf00\uc5b4\ub9cc\ud07c \uc911\uc694\ud569\ub2c8\ub2e4.", "future_prediction": {"expected_milestone": "\ud53c\ubd80 \uc18d\ub2f9\uae40 \uac1c\uc120 \ubc0f \ud45c\uba74 \uc720\uc5f0\uc131 \uc99d\uac00", "estimated_days": 14, "maintenance_priority": "\uc218\ubd84 \uc7a5\ubcbd \uac15\ud654 \ubc0f \uae30\ud6c4 \uc801\uc751\ub825 \uc99d\uc9c4"}, "peer_context": "\uc720\uc0ac\ud55c \uace0\uc628 \uac74\uc870 \uae30\ud6c4\uc5d0 \uac70\uc8fc\ud558\ub294 \uc0ac\uc6a9\uc790\ub4e4\uc740 \ub300\ubd80\ubd84 \ud53c\ubd80 \uac74\uc870, \uac01\uc9c8, \ubbfc\uac10\uc131 \uc99d\uac00\ub97c \ud638\uc18c\ud558\uba70, \ubcf4\uc2b5 \ubc0f \uc7a5\ubcbd \uac15\ud654 \uc81c\ud488\uc5d0 \ub300\ud55c \uc758\uc874\ub3c4\uac00 \ub192\uc2b5\ub2c8\ub2e4. \ud2b9\ud788, \uc2e4\ub0b4\uc678 \uc2b5\ub3c4 \ucc28\uc774\ub85c \uc778\ud55c \ud53c\ubd80 \uc2a4\ud2b8\ub808\uc2a4 \uad00\ub9ac\uac00 \uc911\uc694\ud55c \uacf5\ud1b5 \uacfc\uc81c\uc785\ub2c8\ub2e4."}}
+
+==================================================
+
+[2026-04-13 19:23:46.486640] Error: AI failed to generate 'dossier' report.
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 199, in analyze_image
+    raise ValueError("AI failed to generate 'dossier' report.")
+ValueError: AI failed to generate 'dossier' report.
+
+==================================================
+
+[2026-04-13 19:27:10.048304] Error: name 'face_geometry' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 273, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 215, in analyze_image
+    curation = self._generate_integrated_curation(skin_type, face_geometry, personal_color, weather)
+                                                             ^^^^^^^^^^^^^
+NameError: name 'face_geometry' is not defined
+
+==================================================
+
+[2026-04-14 11:33:00.040809] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\0996be2f-2874-4390-94e4-6c58952c5adc.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\0996be2f-2874-4390-94e4-6c58952c5adc.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 287, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\0996be2f-2874-4390-94e4-6c58952c5adc.jpg'
+
+==================================================
+
+[2026-04-14 11:33:02.693561] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\bd577350-a389-48c1-b266-37a5fd720756.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\bd577350-a389-48c1-b266-37a5fd720756.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 231, in analyze
+    report_json = guardian.analyze_vanity(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 343, in analyze_vanity
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\bd577350-a389-48c1-b266-37a5fd720756.jpg'
+
+==================================================
+
+[2026-04-14 11:33:17.695004] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\02b8af85-d754-4c6e-ab48-986f1830ca08.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\02b8af85-d754-4c6e-ab48-986f1830ca08.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 270, in analyze
+    report_json = guardian.analyze_cosmetic_harmonization(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 394, in analyze_cosmetic_harmonization
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\02b8af85-d754-4c6e-ab48-986f1830ca08.jpg'
+
+==================================================
+
+[2026-04-14 11:34:00.181295] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3fcff1ec-d53c-49aa-b09e-448db89cf0ab.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3fcff1ec-d53c-49aa-b09e-448db89cf0ab.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 287, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3fcff1ec-d53c-49aa-b09e-448db89cf0ab.jpg'
+
+==================================================
+
+[2026-04-14 11:34:03.628505] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b63cf456-5dd8-43c2-95dd-cc5573e0d5a2.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b63cf456-5dd8-43c2-95dd-cc5573e0d5a2.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 231, in analyze
+    report_json = guardian.analyze_vanity(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 343, in analyze_vanity
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b63cf456-5dd8-43c2-95dd-cc5573e0d5a2.jpg'
+
+==================================================
+
+[2026-04-14 11:34:17.636103] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3f054ce2-fe78-43a3-9ac6-581c180dc2b9.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3f054ce2-fe78-43a3-9ac6-581c180dc2b9.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 270, in analyze
+    report_json = guardian.analyze_cosmetic_harmonization(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 394, in analyze_cosmetic_harmonization
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\3f054ce2-fe78-43a3-9ac6-581c180dc2b9.jpg'
+
+==================================================
+
+[2026-04-14 11:40:23.213711] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b4fbdbd2-1755-479f-bb33-8b6797740f3a.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b4fbdbd2-1755-479f-bb33-8b6797740f3a.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 287, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\b4fbdbd2-1755-479f-bb33-8b6797740f3a.jpg'
+
+==================================================
+
+[2026-04-14 11:40:25.832348] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\99099363-633c-471e-972d-cad9b8a63bc4.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\99099363-633c-471e-972d-cad9b8a63bc4.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 231, in analyze
+    report_json = guardian.analyze_vanity(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 343, in analyze_vanity
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\99099363-633c-471e-972d-cad9b8a63bc4.jpg'
+
+==================================================
+
+[2026-04-14 11:40:40.356665] Error: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\1b9d40ac-848f-452d-9a94-e91da1bfd8e9.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 191, in analyze_image
+    img = Image.open(image_path)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py", line 3579, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\1b9d40ac-848f-452d-9a94-e91da1bfd8e9.jpg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 270, in analyze
+    report_json = guardian.analyze_cosmetic_harmonization(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 394, in analyze_cosmetic_harmonization
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 258, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: cannot identify image file 'D:\\Workspace\\SkinEngine\\data\\uploads\\1b9d40ac-848f-452d-9a94-e91da1bfd8e9.jpg'
+
+==================================================
+
+[2026-04-14 19:27:27.938915] Error: name 'total_health' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 231, in analyze
+    report_json = guardian.analyze_vanity(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 366, in analyze_vanity
+    return self.analyze_image(
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 277, in analyze_image
+    "total_health": total_health,
+                    ^^^^^^^^^^^^
+NameError: name 'total_health' is not defined
+
+==================================================
+
+[2026-04-14 19:46:11.009048] Error: Invalid or corrupted image format: Data encoding error: Received multipart boundary indeed of raw binary image.
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 189, in analyze_image
+    raise ValueError("Data encoding error: Received multipart boundary indeed of raw binary image.")
+ValueError: Data encoding error: Received multipart boundary indeed of raw binary image.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 271, in analyze
+    report_json = guardian.analyze_cosmetic_harmonization(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 425, in analyze_cosmetic_harmonization
+    analysis_result = self.vision.analyze_image(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 195, in analyze_image
+    raise ValueError(f"Invalid or corrupted image format: {img_err}")
+ValueError: Invalid or corrupted image format: Data encoding error: Received multipart boundary indeed of raw binary image.
+
+==================================================
