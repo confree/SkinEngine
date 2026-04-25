@@ -3,6 +3,8 @@ from src.core.biometrics import BiometricsEngine
 from src.core.environment import EnvironmentEngine
 from src.core.interaction import InteractionEngine
 from src.core.guardian_vision import GuardianVisionEngine
+from src.core.climate_manager import ClimateManager
+from src.core.clinical_manager import ClinicalManager
 from typing import List, Dict, Any, Tuple
 import json
 import os
@@ -18,6 +20,18 @@ class TotalBeautyGuardianEngine:
         self.environment = EnvironmentEngine()
         self.interaction = InteractionEngine()
         self.vision = GuardianVisionEngine(api_key=api_key)
+        
+        # [v15.0.0] Database-Backed Climate & Knowledge Intelligence
+        self.db_params = {
+            "host": "72.62.254.119",
+            "user": "verisadmin",
+            "password": "veris1234!",
+            "dbname": "veriskin"
+        }
+        # [v15.1.0] Fixed VC_API_KEY integration
+        self.vc_api_key = "978MRVGG2XR9MJP4Y9LGQUL2F"
+        self.climate_mgr = ClimateManager(self.db_params, vc_api_key=self.vc_api_key)
+        self.clinical_mgr = ClinicalManager(self.db_params)
         
         # [DECISION LOGIC v1.0] Clinical Foundation Constants (Korean/Asian Clinical Data)
         self.GL = 20    # Glycemic Load threshold
@@ -72,24 +86,31 @@ class TotalBeautyGuardianEngine:
         """
         Total Beauty Analysis via Gemini Vision Engine (v3.5 Location-Aware).
         """
-        # Step 1: Environment & Weather Detection (Ensuring object exists for downstream methods)
+        # Step 1: Environment & Weather Detection
         weather = self.environment.fetch_weather(location)
         
-        if weather_context:
-            current_climate = weather_context
-        else:
-            current_climate = f"{weather.get('weather_desc', 'Unknown')} (Humidity: {weather.get('humidity', '--')}%)"
+        # [v15.0.0] DB-Backed Refined Climate Reasoning
+        refined_climate = self.climate_mgr.get_refined_climate_context(
+            city=location.split(",")[0].strip(),
+            current_temp=weather.get('temp'),
+            current_hum=weather.get('humidity')
+        )
 
-        # Step 2: Automated Vision Analysis (Now with Enriched Context)
+        if weather_context:
+            current_climate = f"{weather_context} | {refined_climate}"
+        else:
+            current_climate = f"{weather.get('weather_desc', 'Unknown')} (Humidity: {weather.get('humidity', '--')}%) | {refined_climate}"
+
+        # Step 2: Automated Vision Analysis (Now with DB-Refined Expert Context)
         raw_analysis = self.vision.analyze_image(
             image_path, 
             context={
                 "location": location, 
-                "weather": current_climate,
+                "weather": current_climate, # Now contains DB Hero/Villain logic
                 "lifestyle": lifestyle_24h,
                 "camera": camera_metadata,
                 "user_profile": registration_data,
-                "previous_analysis": skin_context, # [v13.0.0] Bridge context for Delta-Tracking
+                "previous_analysis": skin_context,
                 "lang": lang
             },
             analysis_type=analysis_type
@@ -386,11 +407,23 @@ class TotalBeautyGuardianEngine:
                         registration_data: Dict[str, Any] = {}, 
                         weather_context: str = None, 
                         lifestyle_24h: str = "Balanced",
-                        lang: str = "en") -> Dict[str, Any]:
+                        lang: str = "en",
+                        skin_context: Dict[str, Any] = {}) -> Dict[str, Any]:
         """
         Specialized analysis for Food/Cosmetics ingredients based on user context.
         """
-        return self.analyze_cosmetic_harmonization(None, [], {}, location, weather_context, lang, registration_data)
+        return self.vision.analyze_image(
+            image_path=image_path,
+            context={
+                "location": location,
+                "weather": weather_context,
+                "lifestyle": lifestyle_24h,
+                "user_profile": registration_data,
+                "skin_context": skin_context,
+                "lang": lang
+            },
+            analysis_type=product_type # 'food' or 'cosmetic'
+        )
 
     def analyze_cosmetic_harmonization(self, 
                                      user_id: str,
@@ -462,6 +495,27 @@ class TotalBeautyGuardianEngine:
         # ── AI 결과 우선 사용 ──────────────────────────────────
         ai = ai_consult or {}
 
+        # ── 임상 지능 통합 (Clinical Intelligence Injection) ────────────────
+        # Get detected concerns from AI analysis (if available)
+        detected_concerns = []
+        if ai_consult.get("detected_keywords"):
+            detected_concerns = ai_consult["detected_keywords"]
+        elif bio.skin_type:
+            detected_concerns = [bio.skin_type]
+            
+        clinical_data = self.clinical_mgr.get_clinical_advice(detected_concerns)
+        clinical_rx_block = ""
+        if clinical_data["disease_guidelines"]:
+            guide = clinical_data["disease_guidelines"][0]
+            clinical_rx_block = (
+                f"\n\n[🩺 Clinical Ground Truth: {guide['name']}]\n"
+                f"학술 근거: {guide['source']}\n"
+                f"- 공식 처방: {guide['medical_rx']}\n"
+                f"- 세안 지침: {guide['cleansing']}\n"
+                f"- 보습 지침: {guide['moisturizing']}\n"
+                f"- 주의사항: {guide['contraindications']}"
+            )
+
         summary = ai.get("summary") or (
             f"가디언 AI 종합 분석 결과, 고객님의 현재 피부 나이는 {bio.skin_age}세로 측정되었습니다. "
             f"현재 {loc}은 {season} 계절로 {risk}에 노출되기 쉬운 시기이며, "
@@ -471,6 +525,9 @@ class TotalBeautyGuardianEngine:
             f"{advice} 전략으로 적극적인 환경 대응 케어를 시작하시기 바랍니다. "
             f"식이 측면에서도 항산화 네트워크(비타민C, 글루타치온)를 보충하면 피부 광채 유지에 도움이 됩니다."
         )
+        
+        if clinical_rx_block:
+            summary += clinical_rx_block
 
         skincare = ai.get("skincare") or (
             f"{season} 기후 위협({risk})에 대응하여, ITA 지수 {bio.ita}도에 최적화된 {advice} 맞춤 루틴을 시작하세요. "

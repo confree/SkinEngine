@@ -9,8 +9,8 @@ import datetime
 import io
 import dataclasses
 
-# [v10.6.8] Load environment variables early
-load_dotenv()
+# [v10.6.8] Load environment variables early with override
+load_dotenv(override=True)
 
 # [v10.6.7] Force UTF-8 for Windows Console to prevent Encoding Errors with Emojis
 if sys.platform == "win32":
@@ -19,6 +19,11 @@ if sys.platform == "win32":
         sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
     except:
         pass
+
+# [v15.4.1] Debug API Key Loading (Masked)
+_key = os.getenv("GEMINI_API_KEY", "")
+_masked = f"{_key[:5]}...{_key[-5:]}" if len(_key) > 10 else "MISSING"
+print(f"🔑 [System-Init] Loaded API Key: {_masked}")
 
 # Add project root to path for package recognition
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -70,7 +75,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # [v10.6.5] Mode-based Log Folders for Engine
 LOG_DIR = os.path.join(BASE_PROJECT_DIR, 'logs')
-ANALYSIS_MODES = ['face', 'skin', 'routine']
+ANALYSIS_MODES = ['face', 'skin', 'routine', 'cosmetic', 'food']
 for mode in ANALYSIS_MODES:
     os.makedirs(os.path.join(LOG_DIR, mode), exist_ok=True)
 
@@ -80,19 +85,27 @@ def get_mapped_mode(analysis_type):
         'face': 'face', 'general': 'face',
         'skin': 'skin', 'vanity': 'skin',
         'routine': 'routine', 'routine_consultation': 'routine',
-        'cosmetic': 'cosmetic'
+        'cosmetic': 'cosmetic',
+        'food': 'food'
     }
     return mapping.get(analysis_type, 'face')
 
 def save_engine_log(mode, filename, data):
-    """엔진 레이어의 분석 로그 저장"""
+    """엔진 레이어의 분석 로그 저장 (폴더 자동 생성 포함)"""
     try:
         mapped_mode = get_mapped_mode(mode)
-        path = os.path.join(LOG_DIR, mapped_mode, filename)
+        target_dir = os.path.join(LOG_DIR, mapped_mode)
+        
+        # [v15.3.10] Ensure subfolder exists
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir, exist_ok=True)
+            
+        path = os.path.join(target_dir, filename)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
+        print(f"📤 [Engine-Log] Saved {filename} to logs/{mapped_mode}/")
     except Exception as e:
-        print(f"[Log-Error] Failed to save engine log: {e}")
+        print(f"⚠️ [Log-Error] Failed to save engine log: {e}")
 
 import traceback
 
@@ -144,7 +157,7 @@ def analyze():
         
         # [v12.1.0] Apply Safe Parsers
         routine = safe_json_loads(data.get('routine'), [])
-        product_type = data.get('product_type', 'face')
+        product_type = data.get('product_type') or ( 'food' if analysis_type == 'food' else 'cosmetic' if analysis_type == 'cosmetic' else 'face' )
         reg_data = safe_json_loads(data.get('registration_data') or data.get('registration'))
         lifestyle = data.get('lifestyle', 'Balanced')
         camera = safe_json_loads(data.get('camera'))
@@ -193,18 +206,7 @@ def analyze():
             
         print(f"[Server] Starting Engine Analysis (Mode: {product_type}, Type: {analysis_type})...")
         
-        if product_type in ['food', 'cosmetic']:
-            # ... (기존 product logic)
-            analysis_result = guardian.analyze_product(
-                image_path=filepath if 'file' in locals() else None, 
-                product_type=product_type,
-                location=location,
-                registration_data=reg_data,
-                weather_context=weather,
-                lifestyle_24h=lifestyle,
-                lang=lang
-            )
-            report_json = analysis_result
+        # [v13.5.1] Redundant block removed. Analysis is now handled by the central dispatcher below.
         # [v10.6.5] 📂 엔진 수신 데이터 로그 기록 (req_*.json)
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         req_filename = f"req_{timestamp}.json"
@@ -223,10 +225,8 @@ def analyze():
         save_engine_log(mapped_mode, req_filename, engine_req_data)
         print(f"[Server] Request log saved to logs/{mapped_mode}/{req_filename}")
 
-        # [v10.6.0] Unified Analysis Type Mapping
+        # [v13.5.0] [Central Dispatcher]
         if analysis_type == 'skin' or analysis_type == 'vanity':
-             # ... (기존 skin 로직)
-            # [NEW] Skin / Efficacy Tracking Mode
             print(f"[Server] Starting Skin Analysis (v1.2.0-SKIN-PRO)...")
             report_json = guardian.analyze_vanity(
                 image_path=filepath,
@@ -237,10 +237,9 @@ def analyze():
                 camera_metadata=camera,
                 current_routine=routine,
                 lang=lang,
-                skin_context=skin_context # [v13.0.0] Restored historical context for comparative analysis
+                skin_context=skin_context
             )
         elif analysis_type == 'routine' or analysis_type == 'routine_consultation':
-            # [NEW] Routine Consultation Logic
             print(f"[Server] Starting Routine consultation Analysis...")
             report_json = guardian.analyze_routine_consultation(
                 routine=routine,
@@ -251,40 +250,23 @@ def analyze():
                 camera_metadata=camera,
                 lang=lang
             )
-        elif analysis_type == 'cosmetic':
-            # [v11.2.5] Dedicated Cosmetic Harmonization Branch
-            print(f"[Server] Starting Cosmetic Harmonization Analysis...")
-            print(f"[DEBUG] Routine Size: {len(str(routine))}, Context Size: {len(str(skin_context))}")
+        elif analysis_type == 'cosmetic' or analysis_type == 'food':
+            print(f"[Server] Starting {analysis_type.upper()} Analysis...")
+            p_name = data.get('product_name') or data.get('item_name')
+            target_prod = p_name if (p_name and str(p_name).lower() != 'null') else "Target Item"
             
-            # [v12.9.16] 🛡️ Strict Null-String Filtering
-            def _clean(val):
-                if val is None or str(val).lower() == 'null' or not str(val).strip():
-                    return None
-                return str(val).strip()
-
-            p_name = _clean(data.get('product_name'))
-            p_type = _clean(data.get('product_type'))
-            target_prod = p_name or p_type or "Current Selection"
-            
-            print(f"🧬 [Target-Logic] Captured Product: '{target_prod}' (Source: {'Name' if p_name else 'Type' if p_type else 'Fallback'})")
-            
-            report_json = guardian.analyze_cosmetic_harmonization(
-                user_id=user_id,
-                routine_list=routine,
-                skin_context=skin_context,
+            report_json = guardian.analyze_product(
+                image_path=filepath, 
+                product_type=analysis_type,
                 location=location,
-                weather=weather,
-                lang=lang,
                 registration_data=reg_data,
-                target_product=target_prod,
-                image_path=filepath
+                weather_context=weather,
+                lifestyle_24h=lifestyle,
+                lang=lang,
+                skin_context=skin_context
             )
-        
         elif analysis_type == 'face' or analysis_type == 'general':
-            # Full Skin/Face Analysis Mode
             print(f"[Server] Starting Face Analysis (v3.1.7-FACE-PRO)...")
-            
-            # [v12.1.8] Direct object passing with full context (including skin_context)
             report_json = guardian.analyze_image(
                 image_path=filepath,
                 location=location,
@@ -298,7 +280,6 @@ def analyze():
                 analysis_type="vanity"
             )
         else:
-             # Default fallback
              print(f"[Server] Unknown analysis type '{analysis_type}'. Falling back to Face Mode.")
              report_json = guardian.analyze_image(image_path=filepath, location=location, lang=lang)
 

@@ -49,7 +49,7 @@ class GuardianVisionEngine:
             "  \"face\": { \"shape\": \"Oval\", \"length_width_ratio\": 1.4, \"asymmetry\": \"None\", \"jaw_tension\": \"Normal\", \"styling_recommendations\": { \"hair\": \"Short\", \"brows\": \"Straight\" } },\n"
             "  \"color\": { \"cielab\": { \"L\": 65.0, \"a\": 10.0, \"b\": 20.0 }, \"seasonal_type\": \"Spring\", \"undertone\": \"Warm\", \"recommended_palette\": [], \"eye_hair_match\": \"Good\" },\n"
             "  \"curation\": { \"skincare_prescription\": \"Moisturize\", \"makeup_prescription\": \"Glow\", \"hair_prescription\": \"Volume\", \"climate_adjustment\": \"Hydrate\" },\n"
-            "  \"consult\": { \"summary\": \"String\", \"skincare\": \"String\", \"makeup\": \"String\", \"hair\": \"String\", \"visual_progress\": \"String\", \"lifestyle_causality\": \"String\", \"efficacy\": [], \"conflicts\": [] },\n"
+            "  \"consult\": { \"summary\": \"String\", \"skincare\": \"String\", \"makeup\": \"String\", \"hair\": \"String\", \"visual_progress\": \"String\", \"lifestyle_causality\": \"String\", \"efficacy\": [], \"conflicts\": [], \"detected_keywords\": [\"Acne\", \"Redness\", \"Pores\"] },\n"
             "  \"dossier\": { \"medical_report\": \"String\", \"makeup_strategy\": \"String\", \"hair_architecture\": \"String\", \"visual_prompt\": \"String\", \"shampoo_prescription\": \"String\", \"nutritional_advice\": \"String\" },\n"
             "  \"final_action\": { \"offset_routine\": [], \"professional_tip\": \"String\", \"future_prediction\": {}, \"peer_context\": \"String\" },\n"
             "  \"scores\": { \"total_health\": 75, \"radiance\": 75, \"climate_adaptability\": 75, \"vitality\": 75, \"resilience\": 75 }\n"
@@ -59,7 +59,8 @@ class GuardianVisionEngine:
             "2. 사용자의 실제 나이가 50세라면 `skin_age`는 45~55 사이의 숫자로 반드시 추정하여 기입하십시오.\n"
             "3. 절대 '알 수 없음'이나 '데이터 없음'으로 필드를 생략하지 마십시오. 추정치라도 반드시 넣어야 합니다.\n"
             "4. `dossier` 내의 모든 리포트 내용은 300자 이상의 풍부한 한국어로 작성하십시오.\n"
-            "5. 이전 버전(1.2.1)의 양식을 절대 사용하지 마십시오. 오직 위 구조만 허용됩니다."
+            "5. **[임상 매칭]**: `consult` 항목의 `detected_keywords`에는 '여드름', '아토피', '홍조', '건조', '민감' 등 관찰된 주요 피부 고민 키워드를 2~3개 반드시 포함하십시오.\n"
+            "6. 이전 버전(1.2.1)의 양식을 절대 사용하지 마십시오. 오직 위 구조만 허용됩니다."
         )
 
         # [VANITY/EFFICACY ANALYSIS v1.2.1-VANITY-PRO]
@@ -100,10 +101,12 @@ class GuardianVisionEngine:
             "1. **언어 규칙**: 모든 응답은 사용자가 요청한 언어로만 작성하십시오.\n"
             "2. **제품 분석**: OCR을 통해 제품명, 브랜드, 성분 추출.\n"
             "3. **궁합 분석**: 피부 타입 및 기후와의 상충 관계 분석.\n"
+            "4. **[중요] 모호성 배제**: 사진이 흐릿하거나 조명이 부족하여 제품을 명확하게 식별할 수 없는 경우, 절대 추측하여 분석하지 마십시오. 대신 `final_action.risk_summary`와 `consult.summary`에 '사진이 명확하지 않아 정밀 분석이 불가능합니다'라고 명시하십시오.\n"
             "**[응답 형식]**: JSON 구조 엄수.\n"
             "{\n"
             "  \"version\": \"3.1.8-PRO\",\n"
             "  \"image_type\": \"cosmetic|food\",\n"
+            "  \"title\": \"식별된 제품명 또는 식품명 (확실한 경우에만 작성)\",\n"
             "  \"product_analysis\": { \"item_name\": \"string\", \"key_ingredients\": [], \"brand_name\": \"string\", \"category\": \"string\" },\n"
             "  \"skin_matching\": { \"compatibility_score\": int, \"climate_clash\": \"string\", \"match_reason\": \"string\", \"warning_ingredients\": [] },\n"
             "  \"dossier\": { \"medical_report\": \"string\", \"nutritional_advice\": \"string\" },\n"
@@ -142,14 +145,15 @@ class GuardianVisionEngine:
             "귀하는 사용자의 현재 피부 상태와 화장품 사이의 화합(Harmony)을 정밀 분석하는 '뷰티 융합 전문가'입니다.\\n"
             "**[v1.0.1-COSMETIC-PRO 분석 지침]**:\\n"
             "1. **이미지 인식 우선**: 만약 'Target Product' 정보가 모호하다면, 첨부된 사진 속의 화장품 라벨, 브랜드명, 전성분표, 혹은 제형을 직접 시각적으로 인식하여 분석하십시오.\\n"
-            "2. **데이터 부족 핑계 금지**: 사용자의 피부 타입 정보가 없더라도 기후 정보와 사진 속 피부 상태를 바탕으로 최선의 추정치를 계산하십시오. 절대 0점을 주지 마십시오.\\n"
-            "3. **조밀도 및 융합 분석**: 선택된 제품이 사용자 피부 컨디션에 얼마나 잘 융합될지 분석하십시오.\\n"
-            "4. **성분-피부 궁합**: 특정 성분이 사용자의 피부 고민에 미칠 긍정적/부정적 영향을 도출하십시오.\\n"
-            "5. **리얼타임 기후 최적화**: 현재 위치와 날씨 정보를 바탕으로, 해당 화장품을 사용하기에 가장 적합한 시간대나 방법을 제안하십시오.\\n"
-            "**[응답 형식]**: 반드시 아래 JSON 구조 그대로 응답하고, 수치는 0을 피하고 반드시 추정치를 넣으십시오.\\n"
+            "2. **[중요] 모호성 배제**: 사진이 흐릿하거나 식별이 어려운 경우 추측하지 마십시오. 명확하지 않을 때는 `consult.summary`에 '사진이 명확하지 않아 분석이 불가능합니다'라고 명확히 기재하십시오.\\n"
+            "3. **데이터 부족 시 처리**: 사용자의 피부 타입 정보가 없더라도 기후 정보와 사진 속 피부 상태를 바탕으로 최선의 추정치를 계산하십시오. 다만, 사진 자체의 화질이 문제라면 2번 지침을 따르십시오.\\n"
+            "4. **조밀도 및 융합 분석**: 선택된 제품이 사용자 피부 컨디션에 얼마나 잘 융합될지 분석하십시오.\\n"
+            "5. **성분-피부 궁합**: 특정 성분이 사용자의 피부 고민에 미칠 긍정적/부정적 영향을 도출하십시오.\\n"
+            "**[응답 형식]**: 반드시 아래 JSON 구조 그대로 응답하십시오.\\n"
             "{\\n"
             "  \\\"version\\\": \\\"1.0.0-COSMETIC\\\",\\n"
             "  \\\"image_type\\\": \\\"cosmetic\\\",\\n"
+            "  \\\"title\\\": \\\"식별된 화장품명 (명확한 경우)\\\",\\n"
             "  \\\"compatibility_score\\\": int(0-100),\\n"
             "  \\\"fusion_report\\\": {\\n"
             "    \\\"texture_match\\\": \\\"string\\\",\\n"
@@ -168,6 +172,39 @@ class GuardianVisionEngine:
             "  },\\n"
             "  \\\"scores\\\": { \\\"total_health\\\": int, \\\"radiance\\\": int, \\\"vitality\\\": int, \\\"resilience\\\": int, \\\"climate_adaptability\\\": int }\\n"
             "}\\n"
+        )
+
+        # [FOOD ANALYSIS v1.0.0 - CLINICAL NUTRITION]
+        self.food_instruction = (
+            "귀하는 식품 섭취가 사용자의 피부 생체 리듬과 노화에 미치는 영향을 분석하는 '임상 영양 뷰티 가디언'입니다.\n"
+            "**[v1.0.0-FOOD 분석 지침]**:\n"
+            "1. **성분 기반 과학적 분석**: 사진 속 식품을 인식하고, 포함된 주요 성분이 피부 세포에 미치는 기전을 설명하십시오.\n"
+            "2. **[중요] 모호성 배제**: 사진이 흐릿하거나 식품을 명확하게 식별할 수 없는 경우, 추측하거나 짐작하여 분석하지 마십시오. 이 경우 `consult.summary`에 '사진 화질이나 정보가 부족하여 명확한 분석이 불가능합니다'라고 명시하십시오.\n"
+            "3. **개인 맞춤형 분석**: 사용자의 피부 타입, 연령, 기후 정보를 종합하여 섭취 시 실질적인 장단점을 과학적으로 기술하십시오.\n"
+            "4. **피부 반응 예측**: 당화 반응(Glycation) 등 생화학적 반응을 근거로 기술하십시오.\n"
+            "**[응답 형식]**: JSON 구조 엄수.\n"
+            "{\n"
+            "  \"version\": \"1.0.0-FOOD\",\n"
+            "  \"image_type\": \"food\",\n"
+            "  \"title\": \"식별된 식품명 (명확한 경우)\",\n"
+            "  \"compatibility_score\": int(0-100),\n"
+            "  \"fusion_report\": {\n"
+            "    \"texture_match\": \"string\",\n"
+            "    \"ingredient_affinity\": \"string\",\n"
+            "    \"climate_suitability\": \"string\"\n"
+            "  },\n"
+            "  \"consult\": {\n"
+            "    \"summary\": \"string\",\n"
+            "    \"synergy_effects\": [\"string\"],\n"
+            "    \"precautions\": [\"string\"]\n"
+            "  },\n"
+            "  \"final_action\": {\n"
+            "    \"optimal_timing\": \"string\",\n"
+            "    \"usage_tip\": \"string\",\n"
+            "    \"risk_summary\": \"string\"\n"
+            "  },\n"
+            "  \"scores\": { \"total_health\": int, \"radiance\": int, \"vitality\": int, \"resilience\": int, \"climate_adaptability\": int }\n"
+            "}\n"
         )
 
     def analyze_image(self, image_path: str, context: Dict[str, Any] = {}, analysis_type: str = "general") -> Dict[str, Any]:
@@ -214,6 +251,8 @@ class GuardianVisionEngine:
                 instruction = self.product_instruction
             elif analysis_type == "cosmetic":
                 instruction = self.cosmetic_instruction
+            elif analysis_type == "food":
+                instruction = self.food_instruction
             else:
                 instruction = self.system_instruction
             

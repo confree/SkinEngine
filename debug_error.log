@@ -665,3 +665,374 @@ Traceback (most recent call last):
 ValueError: Invalid or corrupted image format: Data encoding error: Received multipart boundary indeed of raw binary image.
 
 ==================================================
+
+[2026-04-15 22:17:35.075594] Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 231, in analyze
+    report_json = guardian.analyze_vanity(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 369, in analyze_vanity
+    return self.analyze_image(
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 242, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+
+==================================================
+
+[2026-04-17 07:15:29.748108] Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 288, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 242, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+
+==================================================
+
+[2026-04-17 08:00:24.158392] Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 288, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 242, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+
+==================================================
+
+[2026-04-17 08:04:39.516601] Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 295, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 242, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+
+==================================================
+
+[2026-04-17 08:07:39.696940] Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 295, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 242, in analyze_image
+    response = self.client.models.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 6021, in generate_content
+    response = self._generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\models.py", line 4683, in _generate_content
+    response = self._api_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1532, in request
+    response = self._request(http_request, http_options, stream=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1327, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\_api_client.py", line 1304, in _request_once
+    errors.APIError.raise_for_response(response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\site-packages\google\genai\errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key expired. Please renew the API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key expired. Please renew the API key.'}]}}
+
+==================================================
+
+[2026-04-17 09:32:48.888609] Error: AI failed to generate 'final_action' plan.
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 300, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 252, in analyze_image
+    raise ValueError("AI failed to generate 'final_action' plan.")
+ValueError: AI failed to generate 'final_action' plan.
+
+==================================================
+
+[2026-04-17 11:38:50.361922] Error: Expecting property name enclosed in double quotes: line 66 column 3 (char 6958)
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 300, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 84, in analyze_image
+    raw_analysis = self.vision.analyze_image(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 266, in analyze_image
+    raise e
+  File "D:\Workspace\SkinEngine\src\core\guardian_vision.py", line 257, in analyze_image
+    json_dict = json.loads(json_str, strict=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 359, in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaesu\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 66 column 3 (char 6958)
+
+==================================================
+
+[2026-04-23 20:59:01.812401] Error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 397, in analyze
+    medical_report = dossier.get('medical_report') or "(None)"
+                     ^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+==================================================
+
+[2026-04-23 20:59:57.994672] Error: AI failed to generate 'dossier' report.
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 300, in analyze
+    report_json = guardian.analyze_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Workspace\SkinEngine\src\core\engine.py", line 340, in analyze_image
+    raise ValueError("AI failed to generate 'dossier' report.")
+ValueError: AI failed to generate 'dossier' report.
+
+==================================================
+
+[2026-04-23 21:21:27.994896] Error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 397, in analyze
+    medical_report = dossier.get('medical_report') or "(None)"
+                     ^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+==================================================
+
+[2026-04-23 21:25:33.500291] Error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 397, in analyze
+    medical_report = dossier.get('medical_report') or "(None)"
+                     ^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+==================================================
+
+[2026-04-23 21:28:42.320811] Error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 397, in analyze
+    medical_report = dossier.get('medical_report') or "(None)"
+                     ^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+==================================================
+
+[2026-04-23 21:32:06.625440] Error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:\Workspace\SkinEngine\src\api_gateway.py", line 397, in analyze
+    medical_report = dossier.get('medical_report') or "(None)"
+                     ^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+==================================================
