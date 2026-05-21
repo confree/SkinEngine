@@ -14,7 +14,7 @@ class GeminiVisionEngine:
     """
     
     def __init__(self, api_key: str = None):
-        self.api_key = api_key or "AIzaSyD1MVFUZux4oHnk8hEimxgwFqKq7EaOENU"
+        self.api_key = api_key or "AIzaSyDqC9Rp3Dba7XICdE8dnOmhqJvqDWA36V8"
         self.client = genai.Client(api_key=self.api_key)
         self.model_id = "gemini-1.5-flash"
         

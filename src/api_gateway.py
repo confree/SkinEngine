@@ -140,7 +140,14 @@ def analyze():
         # [v12.0.1] Input Harmonization (analysis_type vs mode)
         # [DEBUG] Changed default to DEBUG_GENERAL to verify deployment
         analysis_type = data.get('mode') or data.get('analysis_type') or 'DEBUG_GENERAL'
-        print(f"\n" + "!" * 40)
+        
+        print("\n" + "📥" * 40)
+        print(f"  [ENGINE] NEW REQUEST RECEIVED!")
+        print(f"  - Mode: {analysis_type.upper()}")
+        print(f"  - User: {data.get('user_id')}")
+        print("📥" * 40 + "\n")
+        
+        print(f"!" * 40)
         print(f"[NEW REQUEST] Analysis Mode Detected: {analysis_type.upper()}")
         print(f"!" * 40 + "\n")
         
@@ -354,20 +361,27 @@ def analyze():
             print(f"[5. Action] {action.get('risk_summary') or '(None)'}")
             print(f"   Tip: {tip[:100]}...")
         else:
-            # [NEW] Product/Food Analysis Logging (v3.1.7-PRO)
-            prod = filtered_data.get("product_analysis", {})
-            match = filtered_data.get("skin_matching", {})
-            dossier = filtered_data.get("dossier", {})
-            risks = filtered_data.get("risks", {})
-            action = filtered_data.get("final_action", {})
+            # [NEW] Product/Food/Routine Analysis Logging (v3.1.7-PRO)
+            # 안전하게 딕셔너리로 가공하여 NoneType 에러 원천 차단
+            prod = filtered_data.get("product_analysis") or {}
+            match = filtered_data.get("skin_matching") or {}
+            dossier = filtered_data.get("dossier") or {}
+            risks = filtered_data.get("risks") or {}
+            action = filtered_data.get("final_action") or {}
             
-            print(f"[1. Product] {prod.get('item_name')} | {prod.get('brand_name')} ({prod.get('category')})")
+            if not isinstance(prod, dict): prod = {}
+            if not isinstance(match, dict): match = {}
+            if not isinstance(dossier, dict): dossier = {}
+            if not isinstance(risks, dict): risks = {}
+            if not isinstance(action, dict): action = {}
+            
+            print(f"[1. Product] {prod.get('item_name') or '(None)'} | {prod.get('brand_name') or '(None)'} ({prod.get('category') or '(None)'})")
             match_reason = match.get('match_reason') or "(None)"
             medical_report = dossier.get('medical_report') or "(None)"
             conflict_report = risks.get('conflict_report') or "(None)"
             prof_tip = action.get('professional_tip') or "(None)"
             
-            print(f"[2. Matching] {match.get('compatibility_score')} | {match_reason[:60]}...")
+            print(f"[2. Matching] {match.get('compatibility_score') or '(None)'} | {match_reason[:60]}...")
             print(f"[3. Dossier] {medical_report[:80]}...")
             print(f"[4. Risks] {conflict_report[:80]}...")
             print(f"[5. Action] {prof_tip[:80]}...")
