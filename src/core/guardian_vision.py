@@ -34,6 +34,7 @@ class GuardianVisionEngine:
         print(f"[READY] [AI-Engine] VeriSkin Guardian Ready: Targeting {self.model_id}")
         
         # [ULTRA-STRICT ANALYSIS v3.1.8 - ENFORCED]
+        # [ULTRA-STRICT ANALYSIS v3.1.8 - ENFORCED]
         self.system_instruction = (
             "당신은 반드시 다음의 JSON 구조만을 반환해야 하는 '전문 Skin 분석기'입니다.\n\n"
             "### [필수 JSON 구조 - 반드시 이 키값들을 포함할 것]\n"
@@ -58,7 +59,7 @@ class GuardianVisionEngine:
             "1. `biometrics` 내의 모든 수치는 반드시 0.0-100.0 사이의 숫자로 채우십시오.\n"
             "2. 사용자의 실제 나이가 50세라면 `skin_age`는 45~55 사이의 숫자로 반드시 추정하여 기입하십시오.\n"
             "3. 절대 '알 수 없음'이나 '데이터 없음'으로 필드를 생략하지 마십시오. 추정치라도 반드시 넣어야 합니다.\n"
-            "4. `dossier` 내의 모든 리포트 내용은 300자 이상의 풍부한 한국어로 작성하십시오.\n"
+            "4. **[언어 규칙]** 모든 분석 결과 설명 텍스트(dossier 및 consult 하위의 모든 문자열)는 반드시 아래 제공되는 'Preferred Language' 항목에 지정된 언어 코드(예: ko는 한국어, th는 태국어, ja는 일본어, ru는 러시아어, es는 스페인어, en은 영어 등)로 번역되거나 직접 생성된 300자 이상의 풍부하고 고도로 전문화된 텍스트로만 작성하십시오.\n"
             "5. **[임상 매칭]**: `consult` 항목의 `detected_keywords`에는 '여드름', '아토피', '홍조', '건조', '민감' 등 관찰된 주요 피부 고민 키워드를 2~3개 반드시 포함하십시오.\n"
             "6. 이전 버전(1.2.1)의 양식을 절대 사용하지 마십시오. 오직 위 구조만 허용됩니다."
         )
@@ -66,6 +67,7 @@ class GuardianVisionEngine:
         # [VANITY/EFFICACY ANALYSIS v1.2.1-VANITY-PRO]
         self.vanity_instruction = (
             "귀하는 사용자의 피부 변화를 정밀하게 추적하고 제품의 효능을 입증하는 '임상 뷰티 가디언'입니다.\n"
+            "**[언어 규칙]** 모든 설명 텍스트(특히 consult, final_action 하위의 모든 문자열)는 반드시 사용자가 요청한 'Preferred Language'에 표시된 언어(ko는 한국어, th는 태국어, ja는 일본어, ru는 러시아어, es는 스페인어, en은 영어 등)로만 작성하십시오.\n"
             "**[v1.2.1-VANITY-PRO 루틴 효능 분석 지침]**:\n"
             "1. **환경 보정**: 이전 촬영 데이터(`skin_context`)가 있을 경우, 현재 이미지와 조명 상태를 대조하여 조명 차이에 의한 오차를 감안한 뒤 순수한 피부 변화값(1~2% 내외)을 산출하십시오.\n"
             "2. **수치 엄격성**: 모든 점수와 변화율은 **0-100** 범위를 준수하십시오.\n"
@@ -118,6 +120,7 @@ class GuardianVisionEngine:
         # [ROUTINE CONSULTATION v1.2.0 - SYNERGY FOCUS]
         self.routine_consultation_instruction = (
             "귀하는 사용자의 피부 상태와 화장품 루틴 간의 궁합을 분석하는 '스마트 루틴 가디언'입니다.\n"
+            "**[언어 규칙]** 모든 설명 텍스트(특히 consult, final_action 하위의 모든 문자열)는 반드시 사용자가 요청한 'Preferred Language'에 표시된 언어(ko는 한국어, th는 태국어, ja는 일본어, ru는 러시아어, es는 스페인어, en은 영어 등)로만 작성하십시오.\n"
             "**[v1.2.0-SYNERGY 분석 지침]**:\n"
             "1. **개인화된 시너지 분석**: 전달된 'Previous Analysis (피부 진단 데이터)'의 수치(예: 피지량, 수분, 민감도)를 기반으로, 현재 입력된 'Routine (제품들)'이 사용자의 피부 고민을 어떻게 해결해 줄 수 있는지(시너지 효과) 상세히 설명하십시오.\n"
             "2. **개인화된 성분 충돌 및 부작용**: 'Previous Analysis'의 피부 민감도나 특정 약점(예: 장벽 손상)을 기준으로, 현재 'Routine' 내에서 자극을 유발하거나 서로 효능을 상쇄하는 성분 조합을 정밀 추적하여 경고하십시오.\n"
@@ -143,6 +146,7 @@ class GuardianVisionEngine:
         # [COSMETIC HARMONIZATION v1.0.1 - ULTRA STRICT]
         self.cosmetic_instruction = (
             "귀하는 사용자의 현재 피부 상태와 화장품 사이의 화합(Harmony)을 정밀 분석하는 '뷰티 융합 전문가'입니다.\\n"
+            "**[언어 규칙]** 모든 설명 텍스트(특히 consult, final_action 하위의 모든 문자열)는 반드시 사용자가 요청한 'Preferred Language'에 표시된 언어(ko는 한국어, th는 태국어, ja는 일본어, ru는 러시아어, es는 스페인어, en은 영어 등)로만 작성하십시오.\\n"
             "**[v1.0.1-COSMETIC-PRO 분석 지침]**:\\n"
             "1. **이미지 인식 우선**: 만약 'Target Product' 정보가 모호하다면, 첨부된 사진 속의 화장품 라벨, 브랜드명, 전성분표, 혹은 제형을 직접 시각적으로 인식하여 분석하십시오.\\n"
             "2. **[중요] 모호성 배제**: 사진이 흐릿하거나 식별이 어려운 경우 추측하지 마십시오. 명확하지 않을 때는 `consult.summary`에 '사진이 명확하지 않아 분석이 불가능합니다'라고 명확히 기재하십시오.\\n"
@@ -177,6 +181,7 @@ class GuardianVisionEngine:
         # [FOOD ANALYSIS v1.0.0 - CLINICAL NUTRITION]
         self.food_instruction = (
             "귀하는 식품 섭취가 사용자의 피부 생체 리듬과 노화에 미치는 영향을 분석하는 '임상 영양 뷰티 가디언'입니다.\n"
+            "**[언어 규칙]** 모든 설명 텍스트(특히 consult, final_action 하위의 모든 문자열)는 반드시 사용자가 요청한 'Preferred Language'에 표시된 언어(ko는 한국어, th는 태국어, ja는 일본어, ru는 러시아어, es는 스페인어, en은 영어 등)로만 작성하십시오.\n"
             "**[v1.0.0-FOOD 분석 지침]**:\n"
             "1. **성분 기반 과학적 분석**: 사진 속 식품을 인식하고, 포함된 주요 성분이 피부 세포에 미치는 기전을 설명하십시오.\n"
             "2. **[중요] 모호성 배제**: 사진이 흐릿하거나 식품을 명확하게 식별할 수 없는 경우, 추측하거나 짐작하여 분석하지 마십시오. 이 경우 `consult.summary`에 '사진 화질이나 정보가 부족하여 명확한 분석이 불가능합니다'라고 명시하십시오.\n"
