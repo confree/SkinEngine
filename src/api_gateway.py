@@ -42,13 +42,61 @@ def filter_medical_terms(data):
     JSON 데이터 내의 모든 문자열을 재귀적으로 검색하여 금지어를 순화어로 치환
     """
     replacements = {
+        # 한글 용어
         "치료": "개선",
         "진단": "분석",
         "처방": "가이드",
         "의사": "전문가",
         "매우": "상황에 따른", # 정성적 표현 조절
         "수술": "케어",
-        "질환": "상태"
+        "질환": "상태",
+        "임상": "상세",
+        
+        # 영문 용어 (긴 단어 우선 적용하여 부분 매칭 꼬임 방지)
+        "MEDICAL-GRADE": "DERMATOLOGICAL",
+        "medical-grade": "dermatological",
+        "Medical-grade": "Dermatological",
+        "Medical-Grade": "Dermatological",
+        
+        "PRESCRIPTION": "RECOMMENDATION",
+        "Prescription": "Recommendation",
+        "prescription": "recommendation",
+        
+        "DIAGNOSTIC": "ANALYSIS",
+        "Diagnostic": "Analysis",
+        "diagnostic": "analysis",
+        
+        "DIAGNOSIS": "ANALYSIS",
+        "Diagnosis": "Analysis",
+        "diagnosis": "analysis",
+        
+        "TREATMENT": "CARE",
+        "Treatment": "Care",
+        "treatment": "care",
+        
+        "CLINICAL": "DERMATOLOGICAL",
+        "Clinical": "Dermatological",
+        "clinical": "dermatological",
+        
+        "PRESCRIBE": "RECOMMEND",
+        "Prescribe": "Recommend",
+        "prescribe": "recommend",
+        
+        "MEDICAL": "SKINCARE",
+        "Medical": "Skincare",
+        "medical": "skincare",
+        
+        "CLINIC": "SKINCARE CENTER",
+        "Clinic": "Skincare Center",
+        "clinic": "skincare center",
+        
+        "THERAPY": "CARE",
+        "Therapy": "Care",
+        "therapy": "care",
+        
+        " Rx": " Guide",
+        "(Rx)": "(Guide)",
+        "Rx": "Guide"
     }
     
     if isinstance(data, dict):
