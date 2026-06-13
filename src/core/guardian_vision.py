@@ -240,6 +240,55 @@ class GuardianVisionEngine:
             print(f"[AI-Engine] Dynamic translation failed: {e}")
         return text
 
+    def translate_guideline(self, guide: dict, target_lang: str) -> dict:
+        """
+        [v15.12.0] Batch translate all guideline fields in a single Gemini API call to prevent timeout.
+        Failsafe: Returns original guide dict on error.
+        """
+        if not guide or not target_lang:
+            return guide
+        if target_lang.lower().startswith("ko"):
+            return guide
+        try:
+            payload = {
+                "name": guide.get("name", ""),
+                "source": guide.get("source", ""),
+                "medical_rx": guide.get("medical_rx", ""),
+                "cleansing": guide.get("cleansing", ""),
+                "moisturizing": guide.get("moisturizing", ""),
+                "contraindications": guide.get("contraindications", "")
+            }
+            
+            prompt = (
+                f"You are a professional medical and cosmetic translator.\n"
+                f"Translate the following dermatological guideline fields from Korean into natural {target_lang}.\n"
+                f"Preserve formatting, keep medical terminology (e.g. 'Acne Vulgaris', 'BPO') intact.\n"
+                f"Return the translated fields strictly in the exact same JSON format.\n\n"
+                f"JSON to translate:\n{json.dumps(payload, ensure_ascii=False)}"
+            )
+            
+            response = self.client.models.generate_content(
+                model=self.model_id,
+                contents=[prompt],
+                config=types.GenerateContentConfig(
+                    temperature=0.0,
+                    response_mime_type="application/json"
+                )
+            )
+            if response and response.text:
+                translated = json.loads(response.text.strip())
+                return {
+                    "name": translated.get("name", guide.get("name")),
+                    "source": translated.get("source", guide.get("source")),
+                    "medical_rx": translated.get("medical_rx", guide.get("medical_rx")),
+                    "cleansing": translated.get("cleansing", guide.get("cleansing")),
+                    "moisturizing": translated.get("moisturizing", guide.get("moisturizing")),
+                    "contraindications": translated.get("contraindications", guide.get("contraindications"))
+                }
+        except Exception as e:
+            print(f"[AI-Engine] Batch translation failed: {e}")
+        return guide
+
     def analyze_image(self, image_path: str, context: Dict[str, Any] = {}, analysis_type: str = "general") -> Dict[str, Any]:
         if not self.api_key:
              raise RuntimeError("Gemini API Key is missing. Mock mode is strictly disabled.")

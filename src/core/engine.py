@@ -519,20 +519,15 @@ class TotalBeautyGuardianEngine:
                     f"- 주의사항: {guide['contraindications']}"
                 )
             else:
-                translated_name = self.vision.translate_text(guide['name'], lang)
-                translated_source = self.vision.translate_text(guide['source'], lang)
-                translated_rx = self.vision.translate_text(guide['medical_rx'], lang)
-                translated_cleansing = self.vision.translate_text(guide['cleansing'], lang)
-                translated_moisturizing = self.vision.translate_text(guide['moisturizing'], lang)
-                translated_contra = self.vision.translate_text(guide['contraindications'], lang)
+                tr_guide = self.vision.translate_guideline(guide, lang)
                 
                 clinical_rx_block = (
-                    f"\n\n[🩺 Clinical Ground Truth: {translated_name}]\n"
-                    f"Evidence Source: {translated_source}\n"
-                    f"- Medical Prescription: {translated_rx}\n"
-                    f"- Cleansing Guide: {translated_cleansing}\n"
-                    f"- Moisturizing Guide: {translated_moisturizing}\n"
-                    f"- Precautions: {translated_contra}"
+                    f"\n\n[🩺 Clinical Ground Truth: {tr_guide['name']}]\n"
+                    f"Evidence Source: {tr_guide['source']}\n"
+                    f"- Medical Prescription: {tr_guide['medical_rx']}\n"
+                    f"- Cleansing Guide: {tr_guide['cleansing']}\n"
+                    f"- Moisturizing Guide: {tr_guide['moisturizing']}\n"
+                    f"- Precautions: {tr_guide['contraindications']}"
                 )
 
         summary = ai.get("summary") or (
