@@ -212,6 +212,34 @@ class GuardianVisionEngine:
             "}\n"
         )
 
+    def translate_text(self, text: str, target_lang: str) -> str:
+        """
+        [v15.11.0] Dynamically translate text to target language using Gemini API.
+        Failsafe: Returns original text on error.
+        """
+        if not text or not target_lang:
+            return text
+        if target_lang.lower().startswith("ko"):
+            return text # 한국어는 번역 우회
+        try:
+            prompt = (
+                f"You are a professional medical and cosmetic translator. "
+                f"Translate the following Korean dermatological guidelines into natural {target_lang}. "
+                f"Preserve formatting and keep medical term names (e.g. 'Acne Vulgaris', 'BPO') intact. "
+                f"Do not add any conversational filler.\n\n"
+                f"Text to translate:\n{text}"
+            )
+            response = self.client.models.generate_content(
+                model=self.model_id,
+                contents=[prompt],
+                config=types.GenerateContentConfig(temperature=0.0)
+            )
+            if response and response.text:
+                return response.text.strip()
+        except Exception as e:
+            print(f"[AI-Engine] Dynamic translation failed: {e}")
+        return text
+
     def analyze_image(self, image_path: str, context: Dict[str, Any] = {}, analysis_type: str = "general") -> Dict[str, Any]:
         if not self.api_key:
              raise RuntimeError("Gemini API Key is missing. Mock mode is strictly disabled.")

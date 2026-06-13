@@ -265,7 +265,7 @@ class TotalBeautyGuardianEngine:
         if not ai_consult:
             raise ValueError("AI failed to generate 'consult' summary.")
 
-        consult = self._generate_expert_consult(biometrics, face_geometry, personal_color, weather, ai_consult)
+        consult = self._generate_expert_consult(biometrics, face_geometry, personal_color, weather, ai_consult, lang=lang)
         
         # Step 9: Final Action Plan
         fa_data = raw_analysis.get("final_action")
@@ -477,7 +477,7 @@ class TotalBeautyGuardianEngine:
         
         return analysis_result
 
-    def _generate_expert_consult(self, bio, face, color, weather, ai_consult: dict = None) -> ExpertConsultation:
+    def _generate_expert_consult(self, bio, face, color, weather, ai_consult: dict = None, lang: str = "en") -> ExpertConsultation:
         """전문가용 리포트: AI 생성 우선, 없을 시 글자 수 보장 폴백 (summary 200+, skincare 150+, makeup 150+, hair 100+)"""
         s_info = weather.get("season_info", {"season": "Unknown", "risk": "General", "advice": "Balanced Care"})
         
@@ -507,14 +507,33 @@ class TotalBeautyGuardianEngine:
         clinical_rx_block = ""
         if clinical_data["disease_guidelines"]:
             guide = clinical_data["disease_guidelines"][0]
-            clinical_rx_block = (
-                f"\n\n[🩺 Clinical Ground Truth: {guide['name']}]\n"
-                f"학술 근거: {guide['source']}\n"
-                f"- 공식 처방: {guide['medical_rx']}\n"
-                f"- 세안 지침: {guide['cleansing']}\n"
-                f"- 보습 지침: {guide['moisturizing']}\n"
-                f"- 주의사항: {guide['contraindications']}"
-            )
+            
+            is_korean = lang.lower().startswith("ko")
+            if is_korean:
+                clinical_rx_block = (
+                    f"\n\n[🩺 Clinical Ground Truth: {guide['name']}]\n"
+                    f"학술 근거: {guide['source']}\n"
+                    f"- 공식 처방: {guide['medical_rx']}\n"
+                    f"- 세안 지침: {guide['cleansing']}\n"
+                    f"- 보습 지침: {guide['moisturizing']}\n"
+                    f"- 주의사항: {guide['contraindications']}"
+                )
+            else:
+                translated_name = self.vision.translate_text(guide['name'], lang)
+                translated_source = self.vision.translate_text(guide['source'], lang)
+                translated_rx = self.vision.translate_text(guide['medical_rx'], lang)
+                translated_cleansing = self.vision.translate_text(guide['cleansing'], lang)
+                translated_moisturizing = self.vision.translate_text(guide['moisturizing'], lang)
+                translated_contra = self.vision.translate_text(guide['contraindications'], lang)
+                
+                clinical_rx_block = (
+                    f"\n\n[🩺 Clinical Ground Truth: {translated_name}]\n"
+                    f"Evidence Source: {translated_source}\n"
+                    f"- Medical Prescription: {translated_rx}\n"
+                    f"- Cleansing Guide: {translated_cleansing}\n"
+                    f"- Moisturizing Guide: {translated_moisturizing}\n"
+                    f"- Precautions: {translated_contra}"
+                )
 
         summary = ai.get("summary") or (
             f"가디언 AI 종합 분석 결과, 고객님의 현재 피부 나이는 {bio.skin_age}세로 측정되었습니다. "

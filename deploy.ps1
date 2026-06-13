@@ -6,6 +6,7 @@ $serverPath = "/root/SkinEngine"
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
 Clear-Host
+Set-Location "d:\Workspace\SkinEngine"
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "   🚀 SkinEngine One-Click Deployment       " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
